@@ -1,7 +1,7 @@
 const sequelize = require('../sequelize');
 const { DataTypes } = require('sequelize')
 
-const LineStop = sequelize.define('LineStop',  {
+const LineStop = sequelize.define('LineStop', {
     lineId: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,6 +12,8 @@ const LineStop = sequelize.define('LineStop',  {
         primaryKey: true,
         allowNull: false
     }
+}, {
+    timestamps: false
 });
 
 module.exports = LineStop;

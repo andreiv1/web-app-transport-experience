@@ -9,16 +9,23 @@ const Line = sequelize.define('Line',
             autoIncrement: true
         },
         vehicleType: {
+            type: DataTypes.TINYINT(1),
+            allowNull: false
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        startStopId: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        directionLocation: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        returnLocation: {
-            type: DataTypes.STRING,
+        endStopId: {
+            type: DataTypes.INTEGER,
             allowNull: false
         }
     });
+
+
+module.exports = Line;
 

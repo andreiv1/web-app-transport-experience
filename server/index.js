@@ -2,7 +2,27 @@ require('dotenv').config();
 
 const express = require('express')
 const cors = require('cors')
-const sequelize = require('./sequelize')
+const sequelize = require('./sequelize');
+
+//Models
+const Line = require('./models/line.js');
+const Stop = require('./models/stop.js');
+const LineStop = require('./models/linestop.js');
+//Relations
+Stop.hasOne(Line, {
+    foreignKey: {
+        name: 'startStopId'
+    }
+});
+Stop.hasOne(Line, {
+    foreignKey: {
+        name: 'endStopId'
+    }
+});
+
+Line.belongsToMany(Stop, { through: 'LineStop', foreignKey: 'lineId'});
+Stop.belongsToMany(Line, { through: 'LineStop', foreignKey: 'stopId'});
+
 const app = express();
 const router = express.Router();
 require('./models/line.js')

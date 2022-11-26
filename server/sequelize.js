@@ -27,7 +27,7 @@ switch (process.env.DB) {
 }
 
 const sequelize = seq;
-sequelize.sync().then(() => {
+sequelize.sync({force: true}).then(() => {
     console.log('All models were synced successfully.')
 })
 

@@ -1,7 +1,7 @@
 const sequelize = require('../sequelize');
 const { DataTypes } = require('sequelize')
 
-const Stop = sequelize.define('Stop',  {
+const Stop = sequelize.define('Stop', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

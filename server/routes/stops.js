@@ -3,10 +3,6 @@ const Line = require('../models/line');
 const Stop = require('../models/stop')
 let router = express.Router()
 
-
-
-module.exports = router;
-
 router.route('/add').post(async function (req, res) {
     try {
         const stop = await Stop.create(req.body)

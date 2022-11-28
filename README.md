@@ -25,7 +25,9 @@ Exemple de constrângeri:
   - [ ] de adăugat constrângeri NOT NULL
   - [ ] de adăugat valoare implicită pentru enabled (default = *false*)
   - [ ] lungimea minimă pentru username este de 6 și maxim 32 de caractere
-  - [ ] caractere permise în username: litere și numere
+  - [ ] lungime minimă pentru parolă 8 și maxim 128 caractere
+  - [ ] caractere permise în username: litere mici și numere 0-9
+  - [ ] caractere permise în parolă: litere mici + mari, numere 0-9, și caractere speciale (!%$ etc.)
   - [ ] lungimea maximă pentru email este de 128 caractere
   - [ ] constrângere că este email
   - [ ] email de tip lowercase

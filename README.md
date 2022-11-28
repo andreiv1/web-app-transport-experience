@@ -22,15 +22,15 @@ Exemple de constrângeri:
   - [ ] schimbat vehicleType în Sequelize.ENUM cu valorile: BUS, TROLLEYBUS, TRAM, SUBWAY
 
 - [ ] models/users.js
-  - [ ] de adăugat constrângeri NOT NULL
-  - [ ] de adăugat valoare implicită pentru enabled (default = *false*)
-  - [ ] lungimea minimă pentru username este de 6 și maxim 32 de caractere
-  - [ ] lungime minimă pentru parolă 8 și maxim 128 caractere
-  - [ ] caractere permise în username: litere mici și numere 0-9
+  - [x] de adăugat constrângeri NOT NULL
+  - [x] de adăugat valoare implicită pentru enabled (default = *false*)
+  - [x] lungimea minimă pentru username este de 6 și maxim 32 de caractere
+  - [x] lungime minimă pentru parolă 8 și maxim 128 caractere
+  - [x] caractere permise în username: litere mici și numere 0-9
   - [ ] caractere permise în parolă: litere mici + mari, numere 0-9, și caractere speciale (!%$ etc.)
-  - [ ] lungimea maximă pentru email este de 128 caractere
-  - [ ] constrângere că este email
-  - [ ] email de tip lowercase
+  - [x] lungimea maximă pentru email este de 128 caractere
+  - [x] constrângere că este email
+  - [x] email de tip lowercase
 
 ### Routers
 
@@ -52,10 +52,10 @@ Exemple de constrângeri:
 
 - [ ] routes/stops.js
   - [x] adăugarea unui stop (POST)
-  - [ ] modificarea unui stop (PUT)
-  - [ ] ștergerea unui stop, după id (DELETE)
-  - [ ] obținerea tuturor stop-urilor (GET)
-  - [ ] obținerea unui singur stop
+  - [x] modificarea unui stop (PUT)
+  - [x] ștergerea unui stop, după id (DELETE)
+  - [x] obținerea tuturor stop-urilor (GET)
+  - [x] obținerea unui singur stop
   - [ ] ! de tratat toate erorile posibile
 
 - [ ] routes/users.js
@@ -99,3 +99,4 @@ Exemple de constrângeri:
   - [ ] Modulul va trebui să returneze rezultate relevante în funcție de locație, mijlocul de transport folosit sau destinație
   
  [Specificații proiect](https://drive.google.com/drive/u/1/folders/1_rYCcGC0epvprSDm1nYNP94Ez9ODvxoQ)
+# test

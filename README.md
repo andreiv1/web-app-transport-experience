@@ -16,14 +16,16 @@ Exemple de constrângeri:
 <https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/>
 
 - [ ] models/experience.js
-  - [ ] de adaugat constrângeri de domeniu - pentru satisfactionLevel  - valoarea minimă este 1, și valoarea maximă este 5
+
+  - [x] de adaugat constrângeri de domeniu - pentru satisfactionLevel - valoarea minimă este 1, și valoarea maximă este 5
 
 - [ ] models/line.js
-  - [ ] schimbat vehicleType în Sequelize.ENUM cu valorile: BUS, TROLLEYBUS, TRAM, SUBWAY
+
+  - [x] schimbat vehicleType în Sequelize.ENUM cu valorile: BUS, TROLLEYBUS, TRAM, SUBWAY
 
 - [ ] models/users.js
   - [x] de adăugat constrângeri NOT NULL
-  - [x] de adăugat valoare implicită pentru enabled (default = *false*)
+  - [x] de adăugat valoare implicită pentru enabled (default = _false_)
   - [x] lungimea minimă pentru username este de 6 și maxim 32 de caractere
   - [x] lungime minimă pentru parolă 8 și maxim 128 caractere
   - [x] caractere permise în username: litere mici și numere 0-9
@@ -35,13 +37,15 @@ Exemple de constrângeri:
 ### Routers
 
 - [ ] routes/experiences.js
-  - [ ] crearea unei experiențe (POST)
-  - [ ] modificarea unei experiențe, după id (PUT)
-  - [ ] obținerea tuturor experiențelor unui user (GET)
-  - [ ] ștergerea unei experiențe (DELETE)
+
+  - [x] crearea unei experiențe (POST)
+  - [x] modificarea unei experiențe, după id (PUT)
+  - [x] obținerea tuturor experiențelor unui user (GET)
+  - [x] ștergerea unei experiențe (DELETE)
   - [ ] ! de tratat toate erorile posibile
 
 - [ ] routes/lines.js
+
   - [x] adaugarea unei linii (POST)
   - [x] modificarea unei linii, după id (PUT)
   - [x] ștergerea unei linii, după id (DELETE)
@@ -51,6 +55,7 @@ Exemple de constrângeri:
   - [ ] ! de tratat toate erorile posibile
 
 - [ ] routes/stops.js
+
   - [x] adăugarea unui stop (POST)
   - [x] modificarea unui stop (PUT)
   - [x] ștergerea unui stop, după id (DELETE)
@@ -59,8 +64,8 @@ Exemple de constrângeri:
   - [ ] ! de tratat toate erorile posibile
 
 - [ ] routes/users.js
-  - [ ] înregistrare / signup (POST)
-  - [ ] autentificare / login (POST)
+  - [x] înregistrare / signup (POST)
+  - [x] autentificare / login (POST)
   - [ ] modificarea unui user, după id (PUT)
   - [ ] resetarea parolei (POST)
   - [ ] dezactivarea contului (POST)
@@ -68,19 +73,21 @@ Exemple de constrângeri:
 
 ### Middlewares
 
-- [ ] User middleware pentru autentificare
-- [ ] Validation middleware
-  - [ ] Validare daca id-ul este numeric
+- [x] User middleware pentru autentificare
+- [x] isAdmin middleware
 
 ## Funcționalități (minime)
 
 - [ ] Modulul Utilizator
+
   - [ ] Creare cont utilizator pe baza unor câmpuri sau cu ajutorul unui API extern (GMAIL, Facebook, Linkedin)
   - [ ] Modificarea sau dezactivarea contului
   - [ ] Resetarea parolei
 
 - [ ] Modulul de Partajare
+
   - [ ] Crearea unei experiențe presupune completarea următoarelor câmpuri:
+
     - Punctul de plecare (A)
     - Punctul de sosire (B)
     - Mijlocul de transport folosit: bus, metro, tram, etc.
@@ -93,10 +100,9 @@ Exemple de constrângeri:
   - [ ] Modificarea intrărilor specifice utilizatorului
   - [ ] Listarea tuturor experiențelor create de un utilizator
   - [ ] Ștergerea unei experiențe
-  
+
 - [ ] Modulul de Căutare
   - [ ] Modulul de căutare va trebui să permită utilizatorului introducerea unor cuvinte cheie, după care vor fi afișate rezultatele, sub formă de listă.
   - [ ] Modulul va trebui să returneze rezultate relevante în funcție de locație, mijlocul de transport folosit sau destinație
-  
- [Specificații proiect](https://drive.google.com/drive/u/1/folders/1_rYCcGC0epvprSDm1nYNP94Ez9ODvxoQ)
 
+[Specificații proiect](https://drive.google.com/drive/u/1/folders/1_rYCcGC0epvprSDm1nYNP94Ez9ODvxoQ)

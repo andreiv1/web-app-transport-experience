@@ -75,6 +75,10 @@ Exemple de constrângeri:
 
 - [x] User middleware pentru autentificare
 - [x] isAdmin middleware
+<<<<<<< HEAD
+=======
+
+>>>>>>> 777701f035dbd960b8e3aeb7ed16eb0299140458
 
 ## Funcționalități (minime)
 

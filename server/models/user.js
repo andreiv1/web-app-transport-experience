@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../sequelize");
+const bcrypt = require('bcrypt')
 
 const User = sequelize.define("User", {
   id: {
@@ -13,8 +14,8 @@ const User = sequelize.define("User", {
     unique: true,
     allowNull: false,
     validate: {
-      len: [6, 32],
-      is: ["/^[0-9a-z]+$", 'i']
+      // len: [6, 32],
+      // is: ["/^[0-9a-z]+$", 'i']
     }
 
   },
@@ -22,8 +23,8 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      len: [8, 128],
-      is: ["/^[0-9a-zA-Z]+$", 'i']
+      // len: [8, 128],
+      // is: ["/^[0-9a-zA-Z]+$", 'i']
     }
 
   },
@@ -32,8 +33,7 @@ const User = sequelize.define("User", {
     unique: true,
     allowNull: false,
     validate: {
-      isEmail: true,
-      isLowercase: true
+      isEmail: true
     }
   },
   enabled: {
@@ -41,6 +41,30 @@ const User = sequelize.define("User", {
     allowNull: false,
     defaultValue: false
   },
+  isAdmin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  activationToken: {
+    type: DataTypes.STRING
+  }
+}, {
+  defaultScope: {
+    attributes: { exclude: ['password'] },
+  },
+  scopes: {
+    withPassword: {
+      attributes: { include: ['password'] },
+    }
+  },
+  hooks: {
+    beforeCreate: async (user, options) => {
+      //Sanitaze email
+      user.email = user.email.toLowerCase();
+      //Encrypt password
+      user.password = await bcrypt.hash(user.password, 10);
+    }
+  }
 });
 
 module.exports = User;

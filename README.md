@@ -59,8 +59,8 @@ Exemple de constrângeri:
   - [ ] ! de tratat toate erorile posibile
 
 - [ ] routes/users.js
-  - [ ] înregistrare / signup (POST)
-  - [ ] autentificare / login (POST)
+  - [x] înregistrare / signup (POST)
+  - [x] autentificare / login (POST)
   - [ ] modificarea unui user, după id (PUT)
   - [ ] resetarea parolei (POST)
   - [ ] dezactivarea contului (POST)
@@ -68,9 +68,9 @@ Exemple de constrângeri:
 
 ### Middlewares
 
-- [ ] User middleware pentru autentificare
-- [ ] Validation middleware
-  - [ ] Validare daca id-ul este numeric
+- [x] User middleware pentru autentificare
+- [x] isAdmin middleware
+
 
 ## Funcționalități (minime)
 

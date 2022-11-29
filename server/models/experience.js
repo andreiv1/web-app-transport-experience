@@ -34,6 +34,10 @@ const Experience = sequelize.define("Experience", {
   satisfactionLevel: {
     type: DataTypes.TINYINT(1),
     allowNull: false,
+    validate: {
+      min: 1,
+      max: 5,
+    },
   },
   userId: {
     type: DataTypes.INTEGER,

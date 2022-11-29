@@ -52,19 +52,22 @@ Line.belongsToMany(Stop, { through: 'LineStop', foreignKey: 'lineId'});
 Stop.belongsToMany(Line, { through: 'LineStop', foreignKey: 'stopId'});
 
 //Routes
+const experiencesRouter = require('./routes/experiences')
 const linesRouter = require('./routes/lines')
 const stopsRouter = require('./routes/stops')
+const usersRouter = require('./routes/users')
 
 const app = express();
 const router = express.Router();
-require('./models/line.js')
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
+app.use('/api/experiences', experiencesRouter);
 app.use('/api/lines', linesRouter);
 app.use('/api/stops', stopsRouter);
+app.use('/api/users', usersRouter);
 
 app.get('/', (req, res) => {
     return res.json({"status": "Server is up"});

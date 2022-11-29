@@ -2,9 +2,13 @@ let express = require('express');
 const Line = require('../models/line');
 const Stop = require('../models/stop')
 let router = express.Router()
+const isAdmin = require("../middleware/isadmin");
 
-router.route('/add').post(async function (req, res) {
+router.route('/add').post(isAdmin, async function (req, res) {
     try {
+        //do not allow input for id
+        delete req.body.id; 
+
         const stop = await Stop.create(req.body)
         res.status(200).json(stop);
     } catch (err) {
@@ -12,8 +16,11 @@ router.route('/add').post(async function (req, res) {
     }
 });
 
-router.route('/edit/:stopId').put(async function (req, res) {
+router.route('/edit/:stopId').put(isAdmin, async function (req, res) {
     try {
+        //do not allow input for id
+        delete req.body.id; 
+        
         let stop = await Stop.findByPk(req.params.stopId)
         if (stop) {
             stop = await stop.update(req.body)
@@ -28,7 +35,7 @@ router.route('/edit/:stopId').put(async function (req, res) {
     }
 });
 
-router.route('/delete/:stopId').delete(async function (req, res) {
+router.route('/delete/:stopId').delete(isAdmin, async function (req, res) {
     try {
         Stop.destroy({
             where: {

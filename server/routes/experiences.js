@@ -18,3 +18,5 @@ router.route('/getAll/:userId').get(function (req, res) {
 router.route('/delete/:experienceId').delete(function (req, res) {
     res.status(501).json({"message": "Not implemented - TO DO"});
 });
+
+module.exports = router;

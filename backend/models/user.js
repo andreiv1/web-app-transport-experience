@@ -39,7 +39,7 @@ const User = sequelize.define(
     enabled: {
       type: DataTypes.TINYINT(1),
       allowNull: false,
-      defaultValue: false,
+      defaultValue: true,
     },
     isAdmin: {
       type: DataTypes.BOOLEAN,
@@ -51,7 +51,7 @@ const User = sequelize.define(
   },
   {
     defaultScope: {
-      attributes: { exclude: ["password"] },
+      attributes: { exclude: ["password", "isAdmin", "activationToken", "enabled"] },
     },
     scopes: {
       withPassword: {

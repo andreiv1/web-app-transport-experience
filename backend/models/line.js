@@ -1,5 +1,8 @@
 const sequelize = require("../sequelize");
+const Sequelize = require('sequelize')
 const { DataTypes } = require("sequelize");
+
+const vehicleType = Sequelize.ENUM('bus', 'trolleybus', 'tram', 'subway');
 
 const Line = sequelize.define("Line", {
   id: {
@@ -8,7 +11,7 @@ const Line = sequelize.define("Line", {
     autoIncrement: true,
   },
   vehicleType: {
-    type: DataTypes.ENUM("BUS", "TROLLEYBUS", "TRAM", "SUBWAY"),
+    type: vehicleType,
     allowNull: false,
   },
   name: {
@@ -23,6 +26,10 @@ const Line = sequelize.define("Line", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+}, {
+  defaultScope: {
+    attributes: { exclude: ["createdAt", "updatedAt"] },
+  }
 });
 
-module.exports = Line;
+module.exports = { Line, vehicleType };

@@ -11,6 +11,12 @@ const Stop = sequelize.define('Stop', {
         type: DataTypes.STRING,
         allowNull: false
     }
-});
+},
+    {
+        defaultScope: {
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+        }
+    }
+);
 
 module.exports = Stop;

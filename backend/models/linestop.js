@@ -11,6 +11,10 @@ const LineStop = sequelize.define('LineStop', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false
+    },
+    orderIndex: {
+        type: DataTypes.INTEGER,
+        allowNull: false
     }
 }, {
     timestamps: false

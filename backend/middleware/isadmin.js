@@ -1,8 +1,7 @@
-const auth = require("../middleware/auth");
+const isAuthorized = require("./isUserAuth");
 
 const isAdmin = (req, res, next) => {
-    
-    auth(req, res, function () {
+    isAuthorized(req, res, () => {
         if(req.userdata.role != 'admin'){
             return res.status(403).json({ "error": "Not Authorized!" })
         } else {

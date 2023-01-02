@@ -8,6 +8,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const isUserAuth = require("../middleware/isUserAuth");
 const checkSessionUserId = require("../middleware/checkSessionUserId");
+const mailTransporter = require("../utils/mailTransporter");
+const { Op } = require("sequelize");
 
 router.route("/signup").post(async function (req, res) {
   const { username, password, email } = req.body;
@@ -118,13 +120,99 @@ router.route("/edit/:userId").put(async function (req, res) {
   })
 });
 
-router.route("/profile").get(isUserAuth, async function(req, res) {
+router.route("/profile").get(isUserAuth, async function (req, res) {
   let user = await User.findByPk(req.userdata.id);
   res.status(201).json(user);
 });
 
-router.route("/resetPassword").post(function (req, res) {
-  res.status(501).json({ message: "Not implemented - TO DO" });
+router.route("/resetPassword").post(async function (req, res) {
+  let { username, email } = req.body;
+
+  //check if user has sent either username, either email
+  if (!username && !email) {
+    return res.status(404).send({ error: "Please send a username or an email address!" });
+  }
+
+  if (username && !email) {
+    email = "";
+  }
+  if (!username && email) {
+    username = "";
+  }
+
+  let user = await User.findOne({
+    where: {
+      [Op.or]: [{ email: email }, { username: username }]
+    }
+  })
+
+  if (!user) {
+    return res.status(201).json({ message: 'If the user exists with the data provided, an e-mail will be sent' });
+  }
+
+  //user already have a token in db
+  if (user.resetPasswordToken) {
+    //check if token is expired
+    try {
+      jwt.verify(user.resetPasswordToken, process.env.JWT_SECRET_KEY)
+      return res.status(401).json({ message: 'You can send another password reset in 30 minutes, please check your email.' });
+    }
+    catch (err) {
+      //generate new token
+    }
+
+  }
+
+  const resetToken = jwt.sign(
+    {
+      id: user.id
+    },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn: "30m",
+    }
+  );
+  await User.update({ "resetPasswordToken": resetToken }, {
+    where: { id: user.id }
+  })
+
+  let resetUrl = process.env.FRONT_END_URL + "/resetPassword?token=" + resetToken;
+  const mailData = {
+    from: 'noreply@transport-experience.tw',  // sender address
+    to: email,
+    subject: 'Reset your password on Transport eXperience',
+    html: `Hi ${username}, <br> ` +
+      `You can reset your password <a href="${resetUrl}">here</a> <br> This link will expire in 30 minutes.`
+  }
+
+  mailTransporter.sendMail(mailData, function (err, info) {
+    if (err)
+      res.status(400).json({ "message": "There was an error sending your email, please try again later." });
+    else
+      res.status(200).json({ "message": `Your email was sent successfully to ${email}, if you can't find it also check spam.` })
+  })
 });
+
+router.route("/updatePassword").post(async function (req, res) {
+  const { token, password } = req.body;
+  if (!token && !password) {
+    return res.status(403).json({ "message": "Missing token and new password" });
+  }
+  let user = await User.findOne({ where: { resetPasswordToken: token } })
+  if (!user) {
+    return res.status(403).json({ "message": "Token is invalid!" })
+  }
+
+  const updated = await User.update({
+    password: password,
+    resetPasswordToken: null
+  }, { where: { id: user.id } }, { where: { resetPasswordToken: token } })
+
+  if (updated) {
+    return res.status(201).json({ "message": "Password changed!" })
+  } else {
+    return res.status(401).json({ "message": "There was an error updating the password, please try again later." })
+  }
+})
 
 module.exports = router;

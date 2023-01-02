@@ -48,6 +48,9 @@ const User = sequelize.define(
     activationToken: {
       type: DataTypes.STRING,
     },
+    resetPasswordToken: {
+      type: DataTypes.STRING,
+    }
   },
   {
     defaultScope: {
@@ -65,6 +68,11 @@ const User = sequelize.define(
         //Encrypt password
         user.password = await bcrypt.hash(user.password, 10);
       },
+      beforeUpdate: async (user, options) => {
+        if(user.changed('password')) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      }
     },
   }
 );

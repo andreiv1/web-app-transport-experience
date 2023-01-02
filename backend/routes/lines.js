@@ -44,7 +44,7 @@ router.route('/delete/:lineId').delete(isAdmin, async function (req, res) {
 router.route('/getAll').get(isUserAuth, async function (req, res) {
     let lines = await Line.findAll({
         attributes: {
-            exclude: ['startStopId', 'endStop']
+            exclude: ['startStopId', 'endStopId']
         },
         include: [{
             model: Stop,

@@ -53,6 +53,9 @@ router.route("/login").post(async function (req, res) {
     }
   }
 
+  if (!user.enabled) {
+    res.status(401).json({ error: "User is disabled." })
+  }
   if (await bcrypt.compare(password, user.password)) {
     if (user.enabled) {
       let role = "user";
@@ -185,12 +188,13 @@ router.route("/resetPassword").post(async function (req, res) {
       `You can reset your password <a href="${resetUrl}">here</a> <br> This link will expire in 30 minutes.`
   }
 
-  mailTransporter.sendMail(mailData, function (err, info) {
-    if (err)
-      res.status(400).json({ "message": "There was an error sending your email, please try again later." });
-    else
-      res.status(200).json({ "message": `Your email was sent successfully to ${email}, if you can't find it also check spam.` })
-  })
+  res.status(201).json({"token": resetToken})
+  // mailTransporter.sendMail(mailData, function (err, info) {
+  //   if (err)
+  //     res.status(400).json({ "message": "There was an error sending your email, please try again later." });
+  //   else
+  //     res.status(200).json({ "message": `Your email was sent successfully to ${email}, if you can't find it also check spam.` })
+  // })
 });
 
 router.route("/updatePassword").post(async function (req, res) {
@@ -204,9 +208,14 @@ router.route("/updatePassword").post(async function (req, res) {
   }
 
   const updated = await User.update({
-    password: password,
+    password: await bcrypt.hash(password, 10),
     resetPasswordToken: null
-  }, { where: { id: user.id } }, { where: { resetPasswordToken: token } })
+  }, {
+    where: { id: user.id, resetPasswordToken: token }
+  }, {
+    individualHooks: true
+  });
+  
 
   if (updated) {
     return res.status(201).json({ "message": "Password changed!" })

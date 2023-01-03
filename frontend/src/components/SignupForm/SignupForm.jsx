@@ -1,26 +1,17 @@
 import React from "react";
-import "./LoginForm.css";
-import { API_BASE_URL } from "../../config";
-import {
-  Grid,
-  TextField,
-  Button,
-  Paper,
-  Avatar,
-  Typography,
-  Link,
-} from "@mui/material";
-import LockIcon from "@mui/icons-material/Lock";
+import "./SignupForm.css";
+import { Grid, TextField, Button, Paper, Avatar } from "@mui/material";
+import CreateIcon from "@mui/icons-material/Create";
 
-function LoginForm() {
+function SignupForm() {
   return (
     <Grid>
       <Paper elevation={10} id="paperStyle">
         <Grid align="center">
           <Avatar id="avatarStyle">
-            <LockIcon />
+            <CreateIcon />
           </Avatar>
-          <h2>Log In</h2>
+          <h2>Sign Up</h2>
         </Grid>
         <TextField
           label="Username"
@@ -28,6 +19,7 @@ function LoginForm() {
           fullWidth
           required
         />
+        <TextField label="Email" placeholder="Enter email" fullWidth required />
 
         <TextField
           type="password"
@@ -37,19 +29,11 @@ function LoginForm() {
           required
         />
         <Button id="btnStyle" variant="contained" type="submit" fullWidth>
-          Log in
+          Sign Up
         </Button>
-        <Typography>
-          Forgot your password?
-          <Link href="/reset-password">Reset password</Link>
-        </Typography>
-        <Typography>
-          Don't you have an account?
-          <Link href="/signup">Register now</Link>
-        </Typography>
       </Paper>
     </Grid>
   );
 }
 
-export default LoginForm;
+export default SignupForm;

@@ -1,0 +1,19 @@
+#search{
+    margin-top: 18px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#btnAddExperience{
+    margin-right: 20px;
+}
+
+#buttons{
+    margin-top: 15px;
+    align-self: flex-start;
+    margin-left: 550px;
+}
+
+#searchBox{
+    margin-left: 10px;
+}

@@ -1,4 +1,10 @@
-.add-experience-form{
+.add-experience-form {
     display: grid;
     width: 50%;
+    margin: 100px auto;
+}
+
+#cancelButton{
+    margin-bottom: 10px;
+    margin-top: 10 px;
 }

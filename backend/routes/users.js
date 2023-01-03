@@ -187,14 +187,13 @@ router.route("/resetPassword").post(async function (req, res) {
     html: `Hi ${username}, <br> ` +
       `You can reset your password <a href="${resetUrl}">here</a> <br> This link will expire in 30 minutes.`
   }
-
-  res.status(201).json({"token": resetToken})
-  // mailTransporter.sendMail(mailData, function (err, info) {
-  //   if (err)
-  //     res.status(400).json({ "message": "There was an error sending your email, please try again later." });
-  //   else
-  //     res.status(200).json({ "message": `Your email was sent successfully to ${email}, if you can't find it also check spam.` })
-  // })
+  
+  mailTransporter.sendMail(mailData, function (err, info) {
+    if (err)
+      res.status(400).json({ "message": "There was an error sending your email, please try again later." });
+    else
+      res.status(200).json({ "message": `Your email was sent successfully to ${email}, if you can't find it also check spam.` })
+  })
 });
 
 router.route("/updatePassword").post(async function (req, res) {

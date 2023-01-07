@@ -179,20 +179,26 @@ router.route("/resetPassword").post(async function (req, res) {
     where: { id: user.id }
   })
 
-  let resetUrl = process.env.FRONT_END_URL + "/resetPassword?token=" + resetToken;
+  let resetUrl = process.env.FRONT_END_URL + "/resetPassword?token=" + encodeURIComponent(resetToken);
   const mailData = {
     from: 'noreply@transport-experience.tw',  // sender address
-    to: email,
+    to: email ? email : user.email,
     subject: 'Reset your password on Transport eXperience',
     html: `Hi ${username}, <br> ` +
       `You can reset your password <a href="${resetUrl}">here</a> <br> This link will expire in 30 minutes.`
   }
-  
-  mailTransporter.sendMail(mailData, function (err, info) {
-    if (err)
+
+  mailTransporter.sendMail(mailData, async function (err, info) {
+    if (err) {
+      await User.update({ "resetPasswordToken": null }, {
+        where: { id: user.id }
+      })
+      console.log(err)
       res.status(400).json({ "message": "There was an error sending your email, please try again later." });
-    else
-      res.status(200).json({ "message": `Your email was sent successfully to ${email}, if you can't find it also check spam.` })
+    }
+    else {
+      res.status(201).json({ "message": "An email was sent with a reset link as you requested." })
+    }
   })
 });
 
@@ -214,7 +220,7 @@ router.route("/updatePassword").post(async function (req, res) {
   }, {
     individualHooks: true
   });
-  
+
 
   if (updated) {
     return res.status(201).json({ "message": "Password changed!" })
@@ -223,4 +229,28 @@ router.route("/updatePassword").post(async function (req, res) {
   }
 })
 
+router.route('/checkAvailability').post(async (req, res) => {
+  let { username, email } = req.body;
+
+  let user = false;
+  if(username){
+    user = await User.findOne({
+      where: { username: username }
+    })
+  }
+
+  if(!user && email) {
+    user = await User.findOne({
+      where: { email: email }
+    })
+  }
+
+  if(user) {
+    //New user sign-up not available
+    return res.status(401).json({ "message": false})
+  } else {
+    //New user sign-up available
+    return res.status(201).json({ "message": true})
+  }
+});
 module.exports = router;

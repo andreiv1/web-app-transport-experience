@@ -20,7 +20,7 @@ const Experience = sequelize.define("Experience", {
     allowNull: false,
   },
   tripDuration: {
-    type: DataTypes.TIME,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   crowdedness: {

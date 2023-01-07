@@ -18,8 +18,8 @@ switch (process.env.DB) {
             process.env.DB_PASS,
             {
                 host: process.env.DB_HOST,
+                dialect: process.env.DB,
                 port: process.env.DB_PORT,
-                dialect: process.env.DB
             })
         break;
 

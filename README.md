@@ -10,15 +10,15 @@ Aplicația trebuie să permită crearea unui cont prin care utilizatorul poate s
 
 ## Funcționalități (minime)
 
-- [ ] Modulul Utilizator
+- [x] Modulul Utilizator
 
-  - [ ] Creare cont utilizator pe baza unor câmpuri sau cu ajutorul unui API extern (GMAIL, Facebook, Linkedin)
+  - [x] Creare cont utilizator pe baza unor câmpuri sau cu ajutorul unui API extern (GMAIL, Facebook, Linkedin)
   - [ ] Modificarea sau dezactivarea contului
-  - [ ] Resetarea parolei
+  - [x] Resetarea parolei
 
 - [ ] Modulul de Partajare
 
-  - [ ] Crearea unei experiențe presupune completarea următoarelor câmpuri:
+  - [x] Crearea unei experiențe presupune completarea următoarelor câmpuri:
 
     - Punctul de plecare (A)
     - Punctul de sosire (B)

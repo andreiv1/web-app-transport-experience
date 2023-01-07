@@ -3,28 +3,23 @@ import React from "react";
 import {
     Card,
     CardContent,
-    Paper
+    Paper,
+    Typography
 } from "@mui/material";
 
-//Components
-import SignupForm from "../../components/SignupForm.jsx";
-import Logo from "../../components/Logo/Logo.jsx"
-import BackgroundPage from "../BackgroundPage/BackgroundPage.jsx"
+import BackgroundPage from "./BackgroundPage/BackgroundPage.jsx"
 
-export default function SignupPage() {
+export default function NotFoundPage() {
     return (
 
         <BackgroundPage>
             <Paper elevation={10}>
                 <Card>
                     <CardContent>
-                        {/* <Logo/> */}
-                        <SignupForm />
+                        <Typography variant='h2' sx={{mx: 0}}>Page not found!</Typography>
                     </CardContent>
                 </Card>
             </Paper>
         </BackgroundPage>
-
-
     );
 }

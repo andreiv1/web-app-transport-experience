@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -9,6 +10,14 @@ import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import Button from '@mui/material/Button';
+import getUserData from "../utils/getUserData";
+
+const pages = [
+  { "name": "Home", "route": "/home" },
+  { "name": "Add experience", "route": "/addExperience" },
+  { "name": "My experiences", "route": "/myExperiences" }
+]
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -51,6 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -91,8 +101,16 @@ export default function PrimarySearchAppBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem onClick={() => { 
+        handleMenuClose() 
+        navigate('/profile')  
+      }}>Profile</MenuItem>
+      <MenuItem onClick={() => {
+        handleMenuClose();
+        navigate('/login')
+        localStorage.removeItem('token')
+
+      }}>Logout</MenuItem>
     </Menu>
   );
 
@@ -110,27 +128,38 @@ export default function PrimarySearchAppBar() {
             Transport eXperience
           </Typography>
 
+          <Toolbar>
+            {pages.map(page => (<Button
+              key={page.route}
+              variant="h6"
+              component="div"
+              sx={{ display: { xs: 'none', sm: 'block' } }}
+              onClick={() => navigate(page.route)}
+            >
+              {page.name}
+            </Button>))}
+          </Toolbar>
 
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'flex', md: 'flex' }, alignItems: 'center'  }}>
+          <Box sx={{ display: { xs: 'flex', md: 'flex' }, alignItems: 'center' }}>
             <Typography
               variant="p"
               noWrap
               component="div"
-              sx={{ display: { xs: 'block', sm: 'block' }, fontWeight: 'medium', fontSize: 17  }}
-              >
-              username
+              sx={{ display: { xs: 'block', sm: 'block' }, fontWeight: 'medium', fontSize: 17 }}
+            >
+              {getUserData().username}
             </Typography>
             <IconButton
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit">
-                <AccountCircle />
-              </IconButton>
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={menuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit">
+              <AccountCircle />
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>

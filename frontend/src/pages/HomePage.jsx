@@ -73,18 +73,24 @@ function HomePage() {
     }, [])
 
     return (
+        <>
+            <NavBar />
 
-        <Box sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        }}>
-            <Stack spacing={2}>
-                {experiences.map((experience) =>
-                    <ExperienceCard key={experience.id} item={experience}></ExperienceCard>
-                )}
-            </Stack>
-        </Box>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                mt: 3
+            }}>
+                <Stack spacing={2}>
+                    {experiences.map((experience) =>
+                        <ExperienceCard key={experience.id} item={experience}></ExperienceCard>
+                    )}
+                </Stack>
+            </Box>
+
+        </>
+
 
     )
 }

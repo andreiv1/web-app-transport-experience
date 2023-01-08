@@ -103,8 +103,8 @@ function ExperienceForm() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
             body: JSON.stringify(payload),
-        }).then(response => { 
-            if(response.status == 201) {
+        }).then(response => {
+            if (response.status == 201) {
                 setDataSnackbar({
                     message: "Thank you! Your experience was shared!",
                     severity: "success"
@@ -116,7 +116,7 @@ function ExperienceForm() {
                     severity: "error"
                 })
             }
-            return response.json() 
+            return response.json()
         })
             .then(data => {
                 console.log(data)
@@ -250,13 +250,11 @@ function ExperienceForm() {
                 alignItems="stretch"
             >
                 <Grid item xs>
-                    <Button variant="contained" onClick={handleSubmit} type="submit" fullWidth>
-                        Save
-                    </Button>
+    
                 </Grid>
                 <Grid item xs>
-                    <Button variant="contained" onClick={() => { navigate('/') }} fullWidth>
-                        Go back
+                    <Button variant="contained" onClick={handleSubmit} type="submit" fullWidth>
+                        Share experience
                     </Button>
                 </Grid>
             </Grid>

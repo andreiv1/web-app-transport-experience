@@ -18,11 +18,13 @@ function LoginPage() {
   const [snackbar, setSnackbar] = useState({show: false});
   const navigate = useNavigate()
   useEffect(() => {
+    console.log("check",checkToken())
     switch(checkToken()){
-      case true:
+      case 1:
+        console.log('go home')
         navigate('/home')
         break;
-      case false:
+      case 0:
         setSnackbar({
           show: true,
           message: "Your session has expired.",

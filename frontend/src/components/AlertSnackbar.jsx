@@ -20,11 +20,16 @@ export default function AlertSnackBar({ data: data }) {
   };
 
   useEffect(() => {
-    console.log("data=",data);
-    if (data != undefined && 'message' in data && 'severity' in data) {
-      setMessage(data.message);
-      setSeverity(data.severity);
-      setOpen(true);
+    console.log("data=", data);
+    if (data !== undefined) {
+      if (data.message !== undefined && data.severity !== undefined) {
+        console.log("Display")
+        console.log(`Message = ${data.message}`)
+        console.log(`Severity = ${data.severity}`)
+        setMessage(data.message);
+        setSeverity(data.severity);
+        setOpen(true);
+      }
     }
   }, [data]);
 

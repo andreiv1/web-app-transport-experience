@@ -111,10 +111,39 @@ router.route("/get/:userId").get(isUserAuth, async function (req, res) {
 
 router.route("/edit/:userId").put(async function (req, res) {
   let user = await User.findByPk(req.params.userId);
-
-  checkSessionUserId(req, res, user.id, () => {
+  delete req.body.id
+  checkSessionUserId(req, res, user.id, async () => {
     if (user) {
-      res.status(201).json(user);
+      await User.update(req.body, {
+        where: {
+          id: req.params.userId
+        },
+        individualHooks: true
+
+      }).then(async (rows) => {
+          if(rows == 1) {
+            let updatedUser = await User.findByPk(req.params.userId);
+            const authToken = jwt.sign(
+              {
+                id: updatedUser.id,
+                username: updatedUser.username,
+                email: updatedUser.email,
+                role: updatedUser.role,
+              },
+              process.env.JWT_SECRET_KEY,
+              {
+                expiresIn: "2h",
+              }
+            );
+            res.status(200).json({"message": "User details changed", "newToken":authToken});
+          } else {
+            res.status(400).json({error: "Edit failed!"})
+          }
+      }).catch((err) => {
+        console.log(err)
+        res.status(400).json({error: "Internal error - edit failed!"})
+      });
+
     } else {
       res
         .status(404)

@@ -8,6 +8,7 @@
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.8.0",
+    "request-promise": "^4.2.6",
     "sequelize": "^6.25.7",
     "sqlite3": "^5.1.2"
   },

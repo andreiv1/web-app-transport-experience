@@ -75,8 +75,42 @@ router.route('/getAll').get(isUserAuth, async function (req, res) {
   res.status(201).json(experiences);
 });
 
-router.route("/getAll/:userId").get(isUserAuth, async function (req, res) {
-  let experiences = await Experience.findAll();
+router.route("/getAll/loggedUser").get(isUserAuth, async function (req, res) {
+  let experiences = await Experience.findAll({
+    where: {
+        userId: req.userdata.id
+    },
+    order:[['id', 'DESC']],
+    atributes:{
+      exclude:['departureStopId', 'arrivalStopId', 'userId', 'lineId']
+    },
+      include:[
+        {
+          model:User,
+          as:'user',
+          attributes:['id', 'username'],
+          required:true
+        },
+        {
+          model:Line,
+          as:'line',
+          attributes:['id', 'name', 'vehicleType'],
+          required:true
+        },
+        {
+          model:Stop,
+          as:'departureStop',
+          attributes:['id', 'name'],
+          required:true
+        },
+        {
+          model:Stop,
+          as:'arrivalStop',
+          attributes:['id', 'name'],
+          required:true
+        }]
+  
+  });
   res.status(201).json(experiences);
 });
 
@@ -97,5 +131,7 @@ router.route("/delete/:experienceId").delete(checkSessionUserId, async function 
     }
   });
 });
+
+
 
 module.exports = router;

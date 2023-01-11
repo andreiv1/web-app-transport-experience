@@ -22,10 +22,17 @@ const Experience = sequelize.define("Experience", {
   tripDuration: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    validate: {
+      min: 1
+    }
   },
   crowdedness: {
     type: DataTypes.TINYINT(1),
     allowNull: false,
+    validate: {
+      min: 1,
+      max: 5,
+    },
   },
   observations: {
     type: DataTypes.STRING,

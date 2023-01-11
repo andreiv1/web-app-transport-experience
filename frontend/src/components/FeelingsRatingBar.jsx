@@ -15,6 +15,13 @@ const StyledRating = styled(Rating)(({ theme }) => ({
   }
 }));
 
+const simpleIcons = [
+  <SentimentVeryDissatisfiedIcon />,
+  <SentimentDissatisfiedIcon />,
+  <SentimentSatisfiedIcon />,
+  <SentimentSatisfiedAltIcon />,
+  <SentimentVerySatisfiedIcon />
+]
 const customIcons = {
   1: {
     icon: <SentimentVeryDissatisfiedIcon color="error" />,
@@ -47,8 +54,23 @@ IconContainer.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
+
+
 export default function FeelingsRatingBar(props) {
   const [rateValue, setRateValue] = useState(props.value);
+  const [readOnly, setReadOnly] = useState(props.readOnly);
+
+  function RenderSmileyIcons() {
+    let icons = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i === rateValue) {
+        icons.push(customIcons[i].icon)
+      } else {
+        icons.push(simpleIcons[i-1]);
+      }
+    }
+    return <>{icons}</>
+  }
 
   useEffect(() => {
     setRateValue(props.value);
@@ -59,12 +81,16 @@ export default function FeelingsRatingBar(props) {
     props.onChange(newValue);
   }
 
-  return (<StyledRating
-    name="highlight-selected-only"
-    value={rateValue}
-    onChange={handleChange}
-    IconContainerComponent={IconContainer}
-    getLabelText={(value) => customIcons[value].label}
-    highlightSelectedOnly
-  />)
+  if (readOnly) {
+    return <>{RenderSmileyIcons()}</>
+  } else {
+    return (<StyledRating
+      name="highlight-selected-only"
+      value={rateValue}
+      onChange={handleChange}
+      IconContainerComponent={IconContainer}
+      getLabelText={(value) => customIcons[value].label}
+      highlightSelectedOnly
+    />)
+  }
 }

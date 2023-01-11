@@ -119,10 +119,10 @@ router.route('/get/:idExperience').get(isUserAuth, async function (req, res) {
   }
 });
 
-router.route("/getAll/loggedUser").get(isUserAuth, checkSessionUserId, async function (req, res) {
+router.route("/getAll/:userId").get(isUserAuth, checkSessionUserId, async function (req, res) {
   let experiences = await Experience.findAll({
     where: {
-      userId: req.userdata.id
+      userId: req.params.userId
     },
     order: [['id', 'DESC']],
     atributes: {

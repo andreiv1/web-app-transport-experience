@@ -24,7 +24,7 @@ function AddExperiencePage() {
                     justifyContent="center"
                     alignItems="top"
                 >
-                    <Paper elevation={10}>
+                    <Paper elevation={10} sx={{ maxWidth: 550, width: 600, mt: 3 }}>
                         <Card>
                             <CardContent>
                                 {/* <Logo/> */}

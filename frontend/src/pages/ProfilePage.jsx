@@ -12,20 +12,21 @@ export default function ProfilePage() {
   return (
     <>
       <NavBar />
+
       <Grid
         container
         direction="row"
         justifyContent="center"
         alignItems="top"
-      ></Grid>
-      <Paper elevation={10}>
-        <Card>
-          <CardContent>
-            {/* <Logo/> */}
-            <ProfileForm />
-          </CardContent>
-        </Card>
-      </Paper>
+      >
+        <Paper elevation={10} sx={{ maxWidth: 550, width: 600, mt: 3 }}>
+          <Card>
+            <CardContent>
+              <ProfileForm />
+            </CardContent>
+          </Card>
+        </Paper>
+      </Grid>
     </>
 
   );

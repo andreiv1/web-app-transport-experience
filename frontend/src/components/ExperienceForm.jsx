@@ -155,8 +155,11 @@ function ExperienceForm() {
 
     const MenuItemsLines = linesData.map(line => (
         <MenuItem key={line.id} value={line.id}>
-            {getVehicleIcon(line.vehicleType)}
-            {line.name} | {line.startStop.name} - {line.endStop.name}
+            <Stack direction="row" spacing={2} justifyContent="left"
+                alignItems="center">
+                {getVehicleIcon(line.vehicleType)}
+                {line.name} | {line.startStop.name} - {line.endStop.name}
+            </Stack>
         </MenuItem>)
     )
 
@@ -250,7 +253,7 @@ function ExperienceForm() {
                 alignItems="stretch"
             >
                 <Grid item xs>
-    
+
                 </Grid>
                 <Grid item xs>
                     <Button variant="contained" onClick={handleSubmit} type="submit" fullWidth>

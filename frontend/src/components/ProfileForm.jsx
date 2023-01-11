@@ -156,14 +156,7 @@ export default function ProfileForm() {
   };
 
   return (
-    <Grid container
-    direction="column"
-    sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-    }}>
+    <Grid>
       <AlertSnackBar data={dataSnackbar} />
       <Grid align="center">
         <Avatar id="avatarStyle">

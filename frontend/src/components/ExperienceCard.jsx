@@ -9,6 +9,7 @@ import {
   Avatar,
   IconButton,
   CardHeader,
+  Stack
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
@@ -36,13 +37,19 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const formatCardTitle = (vehicleType, lineName) =>
-  vehicleType + " line " + lineName;
+const formatCardTitle = (username, vehicleType, lineName) =>
+  <><b>{username}</b> travelled with <u>{vehicleType}</u> on line <b>{lineName}</b></>
+
 const formatDate = (date) => {
   const dateObject = new Date(date);
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return dateObject.toLocaleDateString("en-US", options);
+  const options = { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
+  return `added on ${dateObject.toLocaleDateString("en-GB", options)}`;
 };
+
+const formatDeparture = (departure) => {
+  const dateObject = new Date(departure)
+  return dateObject.toLocaleTimeString("en-GB", { hour: "numeric", minute: "numeric" })
+}
 
 function ExperienceCard(props) {
   const navigate = useNavigate();
@@ -121,10 +128,24 @@ function ExperienceCard(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  // let color = randomColor();
-  let color = "red";
+
+  const row = (label, text) => (<Grid container spacing={1} sx={{ mb: 0.3 }}
+    direction="row"
+    justify="flex-end"
+    alignItems="center">
+    <Grid item xs={4} >
+      <Typography variant="body2" color="textSecondary" component="p">
+        {label}
+      </Typography>
+    </Grid>
+    <Grid item xs={8}>
+      <Typography variant="body2" color="textSecondary" component="p">
+        {text}
+      </Typography>
+    </Grid>
+  </Grid>)
   return (
-    <Card sx={{ maxWidth: 550, width: 300 }}>
+    <Card sx={{ maxWidth: 550, width: 400 }}>
       <CardHeader
         avatar={
           <Avatar aria-label="subway-line">
@@ -136,44 +157,38 @@ function ExperienceCard(props) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={formatCardTitle(item.line.vehicleType, item.line.name)}
+        title={formatCardTitle(item.user.username, item.line.vehicleType, item.line.name)}
         subheader={formatDate(item.createdAt)}
       />
       <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          Departure Station: {item.departureStop.name}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          Arrival Station: {item.arrivalStop.name}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          Duration: {item.tripDuration} minutes
-        </Typography>
-        <Grid container spacing={3} sx={{ mt: 0.4 }}>
-          <Grid item xs="auto">
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              component="p"
-              align="center"
-            >
-              Crowdedness
-            </Typography>
-            <FeelingsRatingBar value={item.crowdedness} readOnly />
-          </Grid>
-          <Grid item xs={6}>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              component="p"
-              align="center"
-            >
-              Satisfaction
-            </Typography>
-            <FeelingsRatingBar value={item.satisfactionLevel} readOnly />
-          </Grid>
-        </Grid>
+        <Stack sx={{ mt: -3 }}>
+          {row('Departure:', item.departureStop.name)}
+          {row('Arrival:', item.arrivalStop.name)}
+          {row('Departure time:', formatDeparture(item.departure))}
+          {row('Duration:', `${item.tripDuration} minutes`)}
+          {row('Crowdedness:', <FeelingsRatingBar value={item.crowdedness} readOnly />)}
+          {row('Satisfaction:', <FeelingsRatingBar value={item.satisfactionLevel} readOnly />)}
+        </Stack>
       </CardContent>
+      {(item.observations.length > 0) ? (
+        <CardActions sx={{ mt: -4 }}>
+          <ExpandMore
+            expand={expanded}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <ExpandMoreIcon />
+          </ExpandMore>
+        </CardActions>
+      ) : (<></>)}
+
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Typography variant="body2" color="textSecondary" component="p">Observations:</Typography>
+          <Typography variant="body2" color="textSecondary" component="p">{item.observations}</Typography>
+        </CardContent>
+      </Collapse>
       {renderMenu}
     </Card>
   );

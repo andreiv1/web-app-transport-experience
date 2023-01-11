@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 
 import {
@@ -131,11 +131,11 @@ function EditExperienceForm(props) {
     console.log(`Observations = ${observations}`);
   };
 
-  const state = useLocation();
+  const {id} = useParams();
+  console.log("exp id param",id)
 
   useEffect(() => {
-    setExperience(state);
-    console.log(experience);
+  
     const fetchLines = async () => {
       try {
         const response = await fetch(API_BASE_URL + "/lines/getAll", {

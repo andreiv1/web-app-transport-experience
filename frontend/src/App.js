@@ -4,15 +4,14 @@ import AddExperiencePage from "./pages/AddExperiencePage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
-import ResetPasswordPage from "./pages/ResetPasswordPage/ResetPasswordPage.jsx";
-import SignupPage from "./pages/SignupPage/SignupPage.jsx";
+import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
+import SignupPage from "./pages/SignupPage.jsx";
 
 import Logout from "./components/Logout.jsx";
 
 import Auth from "./components/Auth.jsx";
 import MyExperiencesPage from "./pages/MyExperiencePage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
-import EditExperiencePage from "./pages/EditExperiencePage.jsx";
 
 function App() {
   return (
@@ -32,7 +31,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/addExperience" element={<AddExperiencePage />} />
           <Route path="/myExperiences" element={<MyExperiencesPage />} />
-          <Route path="/editExperience/:id" element={<EditExperiencePage />} />
+          <Route path="/editExperience/:id" element={<AddExperiencePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

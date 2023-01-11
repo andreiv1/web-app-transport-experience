@@ -32,7 +32,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/addExperience" element={<AddExperiencePage />} />
           <Route path="/myExperiences" element={<MyExperiencesPage />} />
-          <Route path="/editExperience" element={<EditExperiencePage />} />
+          <Route path="/editExperience/:id" element={<EditExperiencePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

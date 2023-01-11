@@ -25,6 +25,7 @@ import FeelingsRatingBar from "./FeelingsRatingBar";
 import { getVehicleIcon } from "../utils/vehicleIcons";
 import { Navigate, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
+import getUserData from "../utils/getUserData";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -104,8 +105,7 @@ function ExperienceCard(props) {
       <MenuItem
         onClick={() => {
           handleMenuClose();
-          console.log(props.exp);
-          navigate(`/editExperience/${props.exp.id}`, { state: { exp: props.exp } });
+          navigate(`/editExperience/${item.id}`);
         }}
       >
         Edit
@@ -144,6 +144,18 @@ function ExperienceCard(props) {
       </Typography>
     </Grid>
   </Grid>)
+
+  const settingsButton = () => {
+    console.log("TEST = ", getUserData().id, item.user.id)
+    if(getUserData().id != item.user.id) {
+      return (<></>)
+    }
+    //User owns the experience
+    return (<IconButton aria-label="settings" onClick={handleEditMenuOpen}>
+      <MoreVertIcon />
+    </IconButton>)
+  }
+
   return (
     <Card sx={{ maxWidth: 550, width: 400 }}>
       <CardHeader
@@ -152,11 +164,7 @@ function ExperienceCard(props) {
             {getVehicleIcon(item.line.vehicleType)}
           </Avatar>
         }
-        action={
-          <IconButton aria-label="settings" onClick={handleEditMenuOpen}>
-            <MoreVertIcon />
-          </IconButton>
-        }
+        action={settingsButton()}
         title={formatCardTitle(item.user.username, item.line.vehicleType, item.line.name)}
         subheader={formatDate(item.createdAt)}
       />

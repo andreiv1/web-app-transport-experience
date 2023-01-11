@@ -21,10 +21,6 @@ import PasswordIcon from '@mui/icons-material/Password';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import AlertSnackBar from "./AlertSnackbar";
 
-function isValidEmail(email) {
-    return /\S+@\S+\.\S+/.test(email);
-}
-
 
 function SignupForm() {
     const [username, setUsername] = useState('');

@@ -15,22 +15,21 @@ function AddExperiencePage() {
         <>
             <NavBar />
 
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="top"
-                >
-                    <Paper elevation={10} sx={{ maxWidth: 550, width: 600, mt: 3 }}>
-                        <Card>
-                            <CardContent>
-                                {/* <Logo/> */}
-                                <ExperienceForm />
-                            </CardContent>
-                        </Card>
-                    </Paper>
-                </Grid>
- 
+            <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="top"
+            >
+                <Paper elevation={10} sx={{ maxWidth: 550, width: 600, mt: 3 }}>
+                    <Card>
+                        <CardContent>
+                            <ExperienceForm />
+                        </CardContent>
+                    </Card>
+                </Paper>
+            </Grid>
+
 
 
 

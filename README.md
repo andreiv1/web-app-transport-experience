@@ -29,8 +29,8 @@ Aplicația trebuie să permită crearea unui cont prin care utilizatorul poate s
     - Observații
     - Nivelul de satisfacție (smiley faces)
 
-  - [ ] Modificarea intrărilor specifice utilizatorului
-  - [ ] Listarea tuturor experiențelor create de un utilizator
+  - [x] Modificarea intrărilor specifice utilizatorului
+  - [x] Listarea tuturor experiențelor create de un utilizator
   - [ ] Ștergerea unei experiențe
 
 - [ ] Modulul de Căutare

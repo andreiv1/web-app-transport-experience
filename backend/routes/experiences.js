@@ -16,7 +16,7 @@ router.route("/add").post(isUserAuth, checkSessionUserId, async function (req, r
   res.status(201).json(newExperience);
 });
 
-router.route("/edit/:experienceId").put(checkSessionUserId, async function (req, res) {
+router.route("/edit/:experienceId").put(isUserAuth, checkSessionUserId, async function (req, res) {
   let experience = await Experience.findByPk(req.params.experienceId);
   if (experience) {
     await Experience.update(req.body, {
@@ -119,7 +119,7 @@ router.route('/get/:idExperience').get(isUserAuth, async function (req, res) {
   }
 });
 
-router.route("/getAll/loggedUser").get(isUserAuth, async function (req, res) {
+router.route("/getAll/loggedUser").get(isUserAuth, checkSessionUserId, async function (req, res) {
   let experiences = await Experience.findAll({
     where: {
       userId: req.userdata.id
@@ -177,12 +177,11 @@ router.route("/delete/:experienceId").delete(isUserAuth, checkSessionUserId, asy
 });
 
 //TODO
-router.route("/search").get(async function (req, res) {
+router.route("/search").get(isUserAuth, async function (req, res) {
   const searchQuery = req.query.q;
   let searchedExperiences = await Experience.findAll({
     where: {
       [Op.or]: [
-        // { id: { [Op.like]: `%${searchQuery}%` } },
         { '$line.name$': { [Op.like]: `%${searchQuery}%` } },
         { '$line.vehicleType$': { [Op.like]: `%${searchQuery}%`}},
         { '$departureStop.name$': { [Op.like]: `%${searchQuery}%` } },
@@ -221,7 +220,6 @@ router.route("/search").get(async function (req, res) {
       }]
   })
   return res.status(201).json({ "query": req.query.q, "result": searchedExperiences })
-  // return res.status(201).json({"query":req.params.query})
 })
 
 

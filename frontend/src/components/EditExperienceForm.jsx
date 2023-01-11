@@ -40,6 +40,26 @@ function EditExperienceForm(props) {
   const [observations, setObservations] = useState("");
   const [experience, setExperience] = useState({});
 
+  let { idExp } = useParams();
+
+  const fetchExperience = async () => {
+    try {
+      console.log("Fetch experience");
+      const response = await fetch(API_BASE_URL + `/experiences/get/${idExp}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const data = await response.json();
+      setExperience(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const fetchLinesStops = async (lineId) => {
     //TODO try catch
     try {
@@ -131,11 +151,13 @@ function EditExperienceForm(props) {
     console.log(`Observations = ${observations}`);
   };
 
-  const {id} = useParams();
-  console.log("exp id param",id)
+  const { id } = useParams();
+  console.log("exp id param", id);
 
   useEffect(() => {
-  
+    console.log("Params", idExp);
+    fetchExperience();
+    console.log(experience);
     const fetchLines = async () => {
       try {
         const response = await fetch(API_BASE_URL + "/lines/getAll", {

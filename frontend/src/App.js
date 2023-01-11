@@ -11,7 +11,7 @@ import SignupPage from "./pages/SignupPage.jsx";
 import Logout from "./components/Logout.jsx";
 
 import Auth from "./components/Auth.jsx";
-import MyExperiencesPage from "./pages/MyExperiencePage.jsx";
+import UserExperiencesPage from "./pages/UserExperiencesPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 
 function App() {
@@ -31,7 +31,7 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/addExperience" element={<AddExperiencePage />} />
-          <Route path="/myExperiences" element={<MyExperiencesPage />} />
+          <Route path="/experiences/:userId" element={<UserExperiencesPage />} />
           <Route path="/editExperience/:id" element={<EditExperiencePage />} />
         </Route>
       </Routes>

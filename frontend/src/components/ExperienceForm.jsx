@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 
 import {
@@ -14,6 +14,7 @@ import {
     Select,
     Stack,
     TextField,
+    Typography,
 } from '@mui/material';
 
 import dayjs from 'dayjs';
@@ -42,8 +43,14 @@ function ExperienceForm() {
     const [satisfactionLevel, setSatisfactionLevel] = useState(0);
     const [observations, setObservations] = useState('');
 
+    const [createdAt, setCreatedAt] = useState('');
+
+    const params = useParams();
+    const experienceId = params.id;
+
+    const isEditing = () => experienceId !== undefined;
+
     const fetchLinesStops = async (lineId) => {
-        //TODO try catch
         try {
             console.log("Fetch lines stops for ", lineId)
             const response = await fetch(API_BASE_URL + `/lines/get/${lineId}`, {
@@ -62,8 +69,35 @@ function ExperienceForm() {
             console.log(error);
         }
     }
-    const navigate = useNavigate();
 
+    //Used for editing an existing experience
+    const fetchExperience = async () => {
+        try {
+            console.log("Fetch experience");
+            const response = await fetch(API_BASE_URL + `/experiences/get/${experienceId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `bearer ${localStorage.getItem("token")}`,
+                },
+            });
+
+            const data = await response.json();
+            console.log(data)
+            setSelectedLine(data.line.id)
+            await fetchLinesStops(data.line.id)
+            setDepartureStop(data.departureStop.id)
+            setArrivalStop(data.arrivalStop.id)
+            setDeparture(data.departure)
+            setTripDuration(data.tripDuration)
+            setCrowdednessLevel(data.crowdedness)
+            setSatisfactionLevel(data.satisfactionLevel)
+            setObservations(data.observations)
+            setCreatedAt(data.createdAt)
+        } catch (error) {
+            console.log(error);
+        }
+    };
     const handleLineChange = async (event) => {
         //Clear the fields
         setDepartureStop('');
@@ -87,7 +121,6 @@ function ExperienceForm() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         const payload = {
             "departureStopId": departureStop,
             "arrivalStopId": arrivalStop,
@@ -98,29 +131,56 @@ function ExperienceForm() {
             "satisfactionLevel": satisfactionLevel,
             "lineId": selectedLine
         }
+        if (isEditing()) {
+            await fetch(API_BASE_URL + `/experiences/edit/${experienceId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                body: JSON.stringify(payload),
+            }).then(response => {
+                if (response.status == 200) {
+                    setDataSnackbar({
+                        message: "Your experience was updated succesfuly!",
+                        severity: "success"
+                    })
+                }
+                else {
+                    setDataSnackbar({
+                        message: "Sorry, your experience couldn't be updated. Please try again later.",
+                        severity: "error"
+                    })
+                }
+                return response.json()
+            })
+                .then(data => {
+                    console.log(data)
+                });
+        }
+        else {
 
-        await fetch(API_BASE_URL + '/experiences/add', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
-            body: JSON.stringify(payload),
-        }).then(response => {
-            if (response.status == 201) {
-                setDataSnackbar({
-                    message: "Thank you! Your experience was shared!",
-                    severity: "success"
-                })
-            }
-            else {
-                setDataSnackbar({
-                    message: "Sorry, your experience couldn't be sent. Please try again later.",
-                    severity: "error"
-                })
-            }
-            return response.json()
-        })
-            .then(data => {
-                console.log(data)
-            });
+
+            await fetch(API_BASE_URL + '/experiences/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+                body: JSON.stringify(payload),
+            }).then(response => {
+                if (response.status == 201) {
+                    setDataSnackbar({
+                        message: "Thank you! Your experience was shared!",
+                        severity: "success"
+                    })
+                }
+                else {
+                    setDataSnackbar({
+                        message: "Sorry, your experience couldn't be sent. Please try again later.",
+                        severity: "error"
+                    })
+                }
+                return response.json()
+            })
+                .then(data => {
+                    console.log(data)
+                });
+        }
 
         console.log(`Selected line = ${selectedLine}`);
         console.log(`Departure stop = ${departureStop}`);
@@ -131,6 +191,11 @@ function ExperienceForm() {
         console.log(`Observations = ${observations}`);
     }
     useEffect(() => {
+        if (experienceId != undefined) {
+            //Edit page, auto fill
+            console.log(`Edit page = ${experienceId}`)
+            fetchExperience();
+        }
         const fetchLines = async () => {
             try {
                 const response = await fetch(API_BASE_URL + '/lines/getAll', {
@@ -150,6 +215,8 @@ function ExperienceForm() {
             }
         }
 
+
+
         fetchLines();
     }, []);
 
@@ -168,9 +235,20 @@ function ExperienceForm() {
             {stop.lineStop.name}
         </MenuItem>)
     )
+    const formatDate = (date) => {
+        const dateObject = new Date(date);
+        const options = { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
+        return `Editing experience you created on ${dateObject.toLocaleDateString("en-GB", options)}`;
+    };
+
     return (
         <Grid>
-
+            {
+                isEditing() ?
+                    (<Typography>{formatDate(createdAt)}</Typography>) 
+                        :
+                    (<Typography>Fill in the details about your experience below.</Typography>)
+            }
             <AlertSnackBar data={dataSnackbar} />
             <FormControl margin="normal" fullWidth>
                 <FormLabel>Line</FormLabel>

@@ -9,9 +9,6 @@ import {
 
 import NavBar from "../components/NavBar.jsx"
 import ExperienceForm from "../components/ExperienceForm.jsx"
-import BackgroundPage, { getRandomImage } from "./BackgroundPage/BackgroundPage.jsx";
-
-import subway from "./BackgroundPage/bg-img/subway.jpg";
 
 function AddExperiencePage() {
     return (

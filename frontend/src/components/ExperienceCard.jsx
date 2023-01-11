@@ -98,7 +98,7 @@ function ExperienceCard(props) {
         onClick={() => {
           handleMenuClose();
           console.log(props.exp);
-          navigate("/editExperience", { state: { exp: props.exp } });
+          navigate(`/editExperience/${props.exp.id}`, { state: { exp: props.exp } });
         }}
       >
         Edit

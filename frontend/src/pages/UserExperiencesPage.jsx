@@ -10,9 +10,13 @@ import { Typography } from "@mui/material";
 export default function UserExperiencePage() {
   const [experiences, setExperiences] = useState([]);
   const params = useParams();
+  let userId = params.userId;
   const fetchExperiences = async () => {
+    if(params.userId === "my"){
+      userId = getUserData().id;
+    }
     const response = await fetch(
-      `${API_BASE_URL}/experiences/getAll/${params.userId}`,
+      `${API_BASE_URL}/experiences/getAll/${userId}`,
       {
         method: "GET",
         headers: {

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import AddExperiencePage from "./pages/AddExperiencePage.jsx";
+import EditExperiencePage from "./pages/EditExperiencePage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
@@ -31,7 +32,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/addExperience" element={<AddExperiencePage />} />
           <Route path="/myExperiences" element={<MyExperiencesPage />} />
-          <Route path="/editExperience/:id" element={<AddExperiencePage />} />
+          <Route path="/editExperience/:id" element={<EditExperiencePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

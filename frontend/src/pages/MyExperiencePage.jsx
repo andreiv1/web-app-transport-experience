@@ -40,6 +40,7 @@ export default function MyExperiencesPage() {
         <Stack spacing={2}>
           {experiences.map((experience) => (
             <ExperienceCard
+              exp={experience}
               key={experience.id}
               item={experience}
             ></ExperienceCard>

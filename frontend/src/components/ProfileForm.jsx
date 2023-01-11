@@ -29,9 +29,13 @@ function isValidEmail(email) {
 export default function ProfileForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [email, setEmail] = useState("");
   const [dataSnackbar, setDataSnackbar] = useState(false);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const navigate = useNavigate();
 
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -142,8 +146,24 @@ export default function ProfileForm() {
     }
   };
 
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleDisable = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
   return (
-    <div>
+    <Grid container
+    direction="column"
+    sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+    }}>
       <AlertSnackBar data={dataSnackbar} />
       <Grid align="center">
         <Avatar id="avatarStyle">
@@ -223,11 +243,20 @@ export default function ProfileForm() {
           >
             Save
           </Button>
-          <Button variant="outlined" startIcon={<DeleteIcon />} color="warning">
+          <Button 
+          variant="outlined" 
+          startIcon={<DeleteIcon />} 
+          color="error"
+          onClick={() => {
+            
+            handleDisable();
+            navigate('/login')
+            localStorage.removeItem('token')
+          }}>
             Disable account
           </Button>
         </Stack>
       </form>
-    </div>
+    </Grid>
   );
 }

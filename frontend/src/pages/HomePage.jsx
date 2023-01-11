@@ -84,7 +84,8 @@ function HomePage() {
         }}
       >
         <Stack spacing={2}>
-          <SearchBar></SearchBar>
+          <SearchBar
+          ></SearchBar>
           {experiences.map((experience) => (
             <ExperienceCard
               key={experience.id}

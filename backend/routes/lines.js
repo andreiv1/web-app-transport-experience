@@ -60,6 +60,8 @@ router.route('/getAll').get(isUserAuth, async function (req, res) {
         }]
 
     });
+    
+    lines = lines.sort((a, b) => a.name.localeCompare(b.name));
     res.status(200).json(lines);
 });
 
@@ -84,15 +86,15 @@ router.route('/get/:lineId').get(isUserAuth, async function (req, res) {
             model: LineStop,
             as: 'stops',
             attributes: ['orderIndex'],
-
             include: [{
                 model: Stop,
                 as: 'lineStop',
                 attributes: ['id', 'name'],
             }]
-        }
+        },
         ]
     })
+    line.stops = line.stops.sort((a, b) => a.orderIndex - b.orderIndex)
     if (line)
         res.status(200).json(line)
     else {

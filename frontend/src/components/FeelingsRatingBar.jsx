@@ -69,7 +69,7 @@ export default function FeelingsRatingBar(props) {
         icons.push(simpleIcons[i-1]);
       }
     }
-    return <>{icons}</>
+    return icons.map((icon,index)=><span key={index}>{icon}</span>)
   }
 
   useEffect(() => {

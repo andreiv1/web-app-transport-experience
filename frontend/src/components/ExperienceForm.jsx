@@ -235,6 +235,58 @@ function ExperienceForm() {
             {stop.lineStop.name}
         </MenuItem>)
     )
+
+    const [lineNotEmpty, setLineNotEmpty] = useState(true);
+
+    const checkLineEmpty = () => {
+        if (selectedLine != '') {
+            setLineNotEmpty(false);
+        }
+    }
+
+    const [departureNotEmpty, setDepartureNotEmpty] = useState(true);
+
+    const checkDepartureEmpty = () => {
+        if (departureStop != '') {
+            setDepartureNotEmpty(false);
+        }
+    }
+
+
+    const [arrivalNotEmpty, setArrivalNotEmpty] = useState(true);
+
+    const checkArrivalEmpty = () => {
+        if (arrivalStop != '') {
+            setArrivalNotEmpty(false);
+        }
+    }
+
+    const [timeNotEmpty, setTimeNotEmpty] = useState(false);
+
+    const [durationNegative, setDurationNegative] = useState(true);
+
+    const checkDurationNegative = (val) => {
+        if (val > 0) {
+            setDurationNegative(false);
+        }
+    }
+
+    const [crowdednessNotEmpty, setCrowdednessNotEmpty] = useState(true);
+
+    const checkCrowdednessEmpty = (val) => {
+        if (val != '') {
+            setCrowdednessNotEmpty(false);
+        }
+    }
+
+    const [satisfactionNotEmpty, setSatisfactionNotEmpty] = useState(true);
+
+    const checkSatisfactionEmpty = (val) => {
+        if (val != '') {
+            setSatisfactionNotEmpty(false);
+        }
+    }
+
     const formatDate = (date) => {
         const dateObject = new Date(date);
         const options = { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "numeric" };
@@ -245,28 +297,28 @@ function ExperienceForm() {
         <Grid>
             {
                 isEditing() ?
-                    (<Typography>{formatDate(createdAt)}</Typography>) 
-                        :
+                    (<Typography>{formatDate(createdAt)}</Typography>)
+                    :
                     (<Typography>Fill in the details about your experience below.</Typography>)
             }
             <AlertSnackBar data={dataSnackbar} />
             <FormControl margin="normal" fullWidth>
                 <FormLabel>Line</FormLabel>
-                <Select value={selectedLine} onChange={handleLineChange}>
+                <Select value={selectedLine} onChange={handleLineChange} onBlur={checkLineEmpty}>
                     {MenuItemsLines}
                 </Select>
             </FormControl>
 
             <FormControl margin="normal" fullWidth>
                 <FormLabel>Departure stop</FormLabel>
-                <Select value={departureStop} onChange={handleDepartureStopChange}>
+                <Select value={departureStop} onChange={handleDepartureStopChange} disabled={lineNotEmpty} onBlur={checkDepartureEmpty}>
                     {MenuItemsSelectedLineStops}
                 </Select>
             </FormControl>
 
             <FormControl margin="normal" fullWidth>
                 <FormLabel>Arrival stop</FormLabel>
-                <Select value={arrivalStop} onChange={handleArrivalStopChange}>
+                <Select value={arrivalStop} onChange={handleArrivalStopChange} disabled={lineNotEmpty} onBlur={checkArrivalEmpty}>
                     {MenuItemsSelectedLineStops}
                 </Select>
             </FormControl>
@@ -276,7 +328,13 @@ function ExperienceForm() {
                         ampm={false}
                         label="Departure Time"
                         value={departure}
-                        onChange={(newValue) => setDeparture(newValue)}
+                        onChange={
+                            (newValue) => {
+                                setDeparture(newValue)
+                                if (newValue !== null) {
+                                    setTimeNotEmpty(false);
+                                }
+                            }}
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
@@ -285,7 +343,12 @@ function ExperienceForm() {
                 <TextField label="Trip Duration" variant="outlined"
                     type="number" step="1"
                     value={tripDuration}
-                    onChange={(event) => setTripDuration(event.target.value)} />
+                    onChange={
+                        (event) => {
+                            setTripDuration(event.target.value);
+                            checkDurationNegative(event.target.value);
+                        }}
+                />
             </FormControl>
 
 
@@ -297,7 +360,11 @@ function ExperienceForm() {
                     <FormControl margin="normal" fullWidth required>
                         <FormLabel>Crowdedness</FormLabel>
                         <FeelingsRatingBar value={crowdednessLevel}
-                            onChange={(newValue) => setCrowdednessLevel(newValue)} />
+                            onChange={
+                                (newValue) => {
+                                    setCrowdednessLevel(newValue);
+                                    checkCrowdednessEmpty(newValue);
+                                }} />
 
                     </FormControl>
                 </Grid>
@@ -305,7 +372,11 @@ function ExperienceForm() {
                     <FormControl margin="normal" fullWidth required>
                         <FormLabel>Satisfaction level</FormLabel>
                         <FeelingsRatingBar value={satisfactionLevel}
-                            onChange={(newValue) => setSatisfactionLevel(newValue)} />
+                            onChange={
+                                (newValue) => {
+                                    setSatisfactionLevel(newValue);
+                                    checkSatisfactionEmpty(newValue);
+                                }} />
                     </FormControl>
                 </Grid>
             </Grid>
@@ -334,11 +405,13 @@ function ExperienceForm() {
 
                 </Grid>
                 <Grid item xs>
-                    <Button variant="contained" onClick={handleSubmit} type="submit" fullWidth>
+                    <Button variant="contained" onClick={handleSubmit} type="submit" fullWidth
+                        disabled={lineNotEmpty || departureNotEmpty || arrivalNotEmpty || timeNotEmpty || durationNegative || crowdednessNotEmpty || satisfactionNotEmpty}>
                         Share experience
                     </Button>
                 </Grid>
             </Grid>
+
 
 
         </Grid>

@@ -38,8 +38,8 @@ const ExpandMore = styled((props) => {
   }),
 }));
 
-const formatCardTitle = (username, vehicleType, lineName) =>
-  <><b>{username}</b> travelled with <u>{vehicleType}</u> on line <b>{lineName}</b></>
+const formatCardTitle = (user, vehicleType, lineName) =>
+  <><a href={`./experiences/${user.id}`}><b>{user.username}</b></a> travelled with <u>{vehicleType}</u> on line <b>{lineName}</b></>
 
 const formatDate = (date) => {
   const dateObject = new Date(date);
@@ -165,7 +165,7 @@ function ExperienceCard(props) {
           </Avatar>
         }
         action={settingsButton()}
-        title={formatCardTitle(item.user.username, item.line.vehicleType, item.line.name)}
+        title={formatCardTitle(item.user, item.line.vehicleType, item.line.name)}
         subheader={formatDate(item.createdAt)}
       />
       <CardContent>

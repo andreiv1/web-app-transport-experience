@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 import {
   Card,
   CardContent,
@@ -20,6 +22,8 @@ import { styled } from "@mui/material/styles";
 import FeelingsRatingBar from "./FeelingsRatingBar";
 
 import { getVehicleIcon } from "../utils/vehicleIcons";
+import { Navigate, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -41,7 +45,78 @@ const formatDate = (date) => {
 };
 
 function ExperienceCard(props) {
+  const navigate = useNavigate();
+  const [anchorElement, setAnchorElement] = React.useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const isMenuOpen = Boolean(anchorElement);
+
+  const handleEditMenuOpen = (event) => {
+    setAnchorElement(event.currentTarget);
+  };
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorElement(null);
+    handleMobileMenuClose();
+  };
+
+  const deleteExperience = async (experienceId) => {
+    try {
+      console.log("Deleted experience ", experienceId);
+      await fetch(API_BASE_URL + `/experiences/delete/${experienceId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `bearer ${localStorage.getItem("token")}`,
+        },
+      }).then(() => {
+        console.log("Experience deleted");
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const { item } = props;
+  const menuId = "primary-search-account-menu";
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorElement}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          console.log(props.exp);
+          navigate(`/editExperience/${props.exp.id}`, { state: { exp: props.exp } });
+        }}
+      >
+        Edit
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          //TODO
+          deleteExperience(props.exp.id);
+          console.log(props.exp.id);
+          window.location.reload(true);
+        }}
+      >
+        Delete
+      </MenuItem>
+    </Menu>
+  );
+
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -57,10 +132,7 @@ function ExperienceCard(props) {
           </Avatar>
         }
         action={
-          <IconButton
-            aria-label="settings"
-            onClick={() => alert("click pe icon button")}
-          >
+          <IconButton aria-label="settings" onClick={handleEditMenuOpen}>
             <MoreVertIcon />
           </IconButton>
         }
@@ -102,6 +174,7 @@ function ExperienceCard(props) {
           </Grid>
         </Grid>
       </CardContent>
+      {renderMenu}
     </Card>
   );
 }

@@ -11,6 +11,7 @@ import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import BackgroundPage from "./BackgroundPage/BackgroundPage";
 import SearchBar from "../components/SearchBar";
+import ExperiencesList from "../components/ExperiencesList.jsx"
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -67,9 +68,24 @@ function HomePage() {
     setExperiences(await response.json());
   };
 
+  const searchExperiences = async (searchQuery) => {
+      console.log("searched=",searchQuery)
+
+      const response = await fetch(`${API_BASE_URL}/experiences/search?q=${searchQuery}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const json = await response.json()
+      setExperiences(json.result);
+      console.log(experiences);
+;
+  }
   useEffect(() => {
     fetchExperiences();
-  }, []);
+  },[]);
 
   return (
     <>
@@ -84,13 +100,8 @@ function HomePage() {
         }}
       >
         <Stack spacing={2}>
-          <SearchBar />
-          {experiences.map((experience) => (
-            <ExperienceCard
-              key={experience.id}
-              item={experience}
-            />
-          ))}
+          <SearchBar onChange={(e)=>{searchExperiences(e.target.value)}} />
+          <ExperiencesList items={experiences}/>
         </Stack>
       </Box>
     </>

@@ -16,7 +16,7 @@ import getUserData from "../utils/getUserData";
 const pages = [
   { "name": "Home", "route": "/home" },
   { "name": "Add experience", "route": "/addExperience" },
-  { "name": "My experiences", "route": "/experiences/my" }
+  { "name": "My experiences", "route": "/experiences/" }
 ]
 
 const Search = styled('div')(({ theme }) => ({

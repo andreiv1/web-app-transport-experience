@@ -311,14 +311,14 @@ function ExperienceForm() {
 
             <FormControl margin="normal" fullWidth>
                 <FormLabel>Departure stop</FormLabel>
-                <Select value={departureStop} onChange={handleDepartureStopChange} disabled={lineNotEmpty} onBlur={checkDepartureEmpty}>
+                <Select value={departureStop} onChange={handleDepartureStopChange} disabled={lineNotEmpty && !isEditing()} onBlur={checkDepartureEmpty}>
                     {MenuItemsSelectedLineStops}
                 </Select>
             </FormControl>
 
             <FormControl margin="normal" fullWidth>
                 <FormLabel>Arrival stop</FormLabel>
-                <Select value={arrivalStop} onChange={handleArrivalStopChange} disabled={lineNotEmpty} onBlur={checkArrivalEmpty}>
+                <Select value={arrivalStop} onChange={handleArrivalStopChange} disabled={lineNotEmpty && !isEditing()} onBlur={checkArrivalEmpty}>
                     {MenuItemsSelectedLineStops}
                 </Select>
             </FormControl>

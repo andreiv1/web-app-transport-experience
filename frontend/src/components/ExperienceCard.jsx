@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import {
@@ -11,19 +11,15 @@ import {
   CardHeader,
   Stack
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Typography from "@mui/material/Typography";
-import PersonIcon from "@mui/icons-material/Person";
-// import randomColor from "randomcolor";
 import Collapse from "@mui/material/Collapse";
 import { styled } from "@mui/material/styles";
 import FeelingsRatingBar from "./FeelingsRatingBar";
 
 import { getVehicleIcon } from "../utils/vehicleIcons";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import getUserData from "../utils/getUserData";
 
@@ -114,9 +110,8 @@ function ExperienceCard(props) {
         onClick={() => {
           handleMenuClose();
           //TODO
-          deleteExperience(props.exp.id);
-          console.log(props.exp.id);
-          window.location.reload(true);
+          deleteExperience(item.id);
+
         }}
       >
         Delete
@@ -147,7 +142,7 @@ function ExperienceCard(props) {
 
   const settingsButton = () => {
     console.log("TEST = ", getUserData().id, item.user.id)
-    if(getUserData().id != item.user.id) {
+    if(getUserData().id !== item.user.id) {
       return (<></>)
     }
     //User owns the experience

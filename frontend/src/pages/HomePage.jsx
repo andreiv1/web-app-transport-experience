@@ -12,6 +12,7 @@ import InputBase from "@mui/material/InputBase";
 import BackgroundPage from "./BackgroundPage/BackgroundPage";
 import SearchBar from "../components/SearchBar";
 import ExperiencesList from "../components/ExperiencesList.jsx"
+import {Typography} from "@mui/material";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -101,7 +102,11 @@ function HomePage() {
       >
         <Stack spacing={2}>
           <SearchBar onChange={(e)=>{searchExperiences(e.target.value)}} />
-          <ExperiencesList items={experiences}/>
+          {experiences.length ?  
+          (<ExperiencesList items={experiences}/>)
+          :
+          (<Typography>Nothing found.</Typography>)
+          }
         </Stack>
       </Box>
     </>

@@ -6,6 +6,7 @@ let router = express.Router();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const isAdmin = require("../middleware/isAdmin")
 const isUserAuth = require("../middleware/isUserAuth");
 const checkSessionUserId = require("../middleware/checkSessionUserId");
 const mailTransporter = require("../utils/mailTransporter");
@@ -54,7 +55,7 @@ router.route("/login").post(async function (req, res) {
   }
 
   if (!user.enabled) {
-    res.status(401).json({ error: "User is disabled." })
+    res.status(401).json({ error: "User is disabled." });
   }
   if (await bcrypt.compare(password, user.password)) {
     if (user.enabled) {
@@ -109,19 +110,19 @@ router.route("/get/:userId").get(isUserAuth, async function (req, res) {
   }
 });
 
-router.route("/edit/:userId").put(async function (req, res) {
+router.route("/edit/:userId").put(isAdmin, async function (req, res) {
   let user = await User.findByPk(req.params.userId);
-  delete req.body.id
+  delete req.body.id;
   checkSessionUserId(req, res, user.id, async () => {
     if (user) {
       await User.update(req.body, {
         where: {
-          id: req.params.userId
+          id: req.params.userId,
         },
-        individualHooks: true
-
-      }).then(async (rows) => {
-          if(rows == 1) {
+        individualHooks: true,
+      })
+        .then(async (rows) => {
+          if (rows == 1) {
             let updatedUser = await User.findByPk(req.params.userId);
             const authToken = jwt.sign(
               {
@@ -135,22 +136,41 @@ router.route("/edit/:userId").put(async function (req, res) {
                 expiresIn: "2h",
               }
             );
-            res.status(200).json({"message": "User details changed", "newToken":authToken});
+            res
+              .status(200)
+              .json({ message: "User details changed", newToken: authToken });
           } else {
-            res.status(400).json({error: "Edit failed!"})
+            res.status(400).json({ error: "Edit failed!" });
           }
-      }).catch((err) => {
-        console.log(err)
-        res.status(400).json({error: "Internal error - edit failed!"})
-      });
-
+        })
+        .catch((err) => {
+          console.log(err);
+          res.status(400).json({ error: "Internal error - edit failed!" });
+        });
     } else {
       res
         .status(404)
         .json({ error: `user with id ${req.params.userId} not found` });
     }
-  })
+  });
 });
+
+//This route is used to disable logged in user
+router
+  .route("/disableAccount")
+  .post(isUserAuth, checkSessionUserId, async function (req, res) {
+    let user = await User.findByPk(req.userdata.id);
+    if (user && user.isAdmin == 0) {
+      await User.update({enabled: 0}, {
+        where: {
+          id: req.userdata.id
+        },
+        individualHooks: true,
+      });
+    } else {
+      res.status(404).json({ error: `Account couldn't be disabled.` });
+    }
+  });
 
 router.route("/profile").get(isUserAuth, async function (req, res) {
   let user = await User.findByPk(req.userdata.id);
@@ -162,7 +182,9 @@ router.route("/resetPassword").post(async function (req, res) {
 
   //check if user has sent either username, either email
   if (!username && !email) {
-    return res.status(404).send({ error: "Please send a username or an email address!" });
+    return res
+      .status(404)
+      .send({ error: "Please send a username or an email address!" });
   }
 
   if (username && !email) {
@@ -174,112 +196,136 @@ router.route("/resetPassword").post(async function (req, res) {
 
   let user = await User.findOne({
     where: {
-      [Op.or]: [{ email: email }, { username: username }]
-    }
-  })
+      [Op.or]: [{ email: email }, { username: username }],
+    },
+  });
 
   if (!user) {
-    return res.status(201).json({ message: 'If the user exists with the data provided, an e-mail will be sent' });
+    return res.status(201).json({
+      message:
+        "If the user exists with the data provided, an e-mail will be sent",
+    });
   }
 
   //user already have a token in db
   if (user.resetPasswordToken) {
     //check if token is expired
     try {
-      jwt.verify(user.resetPasswordToken, process.env.JWT_SECRET_KEY)
-      return res.status(401).json({ message: 'You can send another password reset in 30 minutes, please check your email.' });
-    }
-    catch (err) {
+      jwt.verify(user.resetPasswordToken, process.env.JWT_SECRET_KEY);
+      return res.status(401).json({
+        message:
+          "You can send another password reset in 30 minutes, please check your email.",
+      });
+    } catch (err) {
       //generate new token
     }
-
   }
 
   const resetToken = jwt.sign(
     {
-      id: user.id
+      id: user.id,
     },
     process.env.JWT_SECRET_KEY,
     {
       expiresIn: "30m",
     }
   );
-  await User.update({ "resetPasswordToken": resetToken }, {
-    where: { id: user.id }
-  })
+  await User.update(
+    { resetPasswordToken: resetToken },
+    {
+      where: { id: user.id },
+    }
+  );
 
-  let resetUrl = process.env.FRONT_END_URL + "/resetPassword?token=" + encodeURIComponent(resetToken);
+  let resetUrl =
+    process.env.FRONT_END_URL +
+    "/resetPassword?token=" +
+    encodeURIComponent(resetToken);
   const mailData = {
-    from: 'noreply@transport-experience.tw',  // sender address
+    from: "noreply@transport-experience.tw", // sender address
     to: email ? email : user.email,
-    subject: 'Reset your password on Transport eXperience',
-    html: `Hi ${username}, <br> ` +
-      `You can reset your password <a href="${resetUrl}">here</a> <br> This link will expire in 30 minutes.`
-  }
+    subject: "Reset your password on Transport eXperience",
+    html:
+      `Hi ${username}, <br> ` +
+      `You can reset your password <a href="${resetUrl}">here</a> <br> This link will expire in 30 minutes.`,
+  };
 
   mailTransporter.sendMail(mailData, async function (err, info) {
     if (err) {
-      await User.update({ "resetPasswordToken": null }, {
-        where: { id: user.id }
-      })
-      console.log(err)
-      res.status(400).json({ "message": "There was an error sending your email, please try again later." });
+      await User.update(
+        { resetPasswordToken: null },
+        {
+          where: { id: user.id },
+        }
+      );
+      console.log(err);
+      res.status(400).json({
+        message:
+          "There was an error sending your email, please try again later.",
+      });
+    } else {
+      res.status(201).json({
+        message: "An email was sent with a reset link as you requested.",
+      });
     }
-    else {
-      res.status(201).json({ "message": "An email was sent with a reset link as you requested." })
-    }
-  })
+  });
 });
 
 router.route("/updatePassword").post(async function (req, res) {
   const { token, password } = req.body;
   if (!token && !password) {
-    return res.status(403).json({ "message": "Missing token and new password" });
+    return res.status(403).json({ message: "Missing token and new password" });
   }
-  let user = await User.findOne({ where: { resetPasswordToken: token } })
+  let user = await User.findOne({ where: { resetPasswordToken: token } });
   if (!user) {
-    return res.status(403).json({ "message": "Token is invalid!" })
+    return res.status(403).json({ message: "Token is invalid!" });
   }
 
-  const updated = await User.update({
-    password: await bcrypt.hash(password, 10),
-    resetPasswordToken: null
-  }, {
-    where: { id: user.id, resetPasswordToken: token }
-  }, {
-    individualHooks: true
-  });
-
+  const updated = await User.update(
+    {
+      password: await bcrypt.hash(password, 10),
+      resetPasswordToken: null,
+    },
+    {
+      where: { id: user.id, resetPasswordToken: token },
+    },
+    {
+      individualHooks: true,
+    }
+  );
 
   if (updated) {
-    return res.status(201).json({ "message": "Password changed!" })
+    return res.status(201).json({ message: "Password changed!" });
   } else {
-    return res.status(401).json({ "message": "There was an error updating the password, please try again later." })
+    return res.status(401).json({
+      message:
+        "There was an error updating the password, please try again later.",
+    });
   }
-})
+});
 
-router.route('/checkAvailability').post(async (req, res) => {
+router.route("/checkAvailability").post(async (req, res) => {
   let { username, email } = req.body;
 
   let user = false;
-  if(username){
+  if (username) {
     user = await User.findOne({
-      where: { username: username }
-    })
+      where: { username: username },
+    });
   }
 
-  if(!user && email) {
+  if (!user && email) {
     user = await User.findOne({
-      where: { email: email }
-    })
+      where: { email: email },
+    });
   }
 
-  if(user) {
+  if (user) {
     //New user sign-up not available
-    return res.status(401).json({ "message": false})
+    return res.status(401).json({ message: false });
   } else {
     //New user sign-up available
-    return res.status(201).json({ "message": true})
+    return res.status(201).json({ message: true });
   }
 });
 module.exports = router;

@@ -176,7 +176,6 @@ router.route("/delete/:experienceId").delete(isUserAuth, checkSessionUserId, asy
   });
 });
 
-//TODO
 router.route("/search").get(isUserAuth, async function (req, res) {
   const searchQuery = req.query.q;
   let searchedExperiences = await Experience.findAll({
@@ -186,7 +185,6 @@ router.route("/search").get(isUserAuth, async function (req, res) {
         { '$line.vehicleType$': { [Op.like]: `%${searchQuery}%`}},
         { '$departureStop.name$': { [Op.like]: `%${searchQuery}%` } },
         { '$arrivalStop.name$': { [Op.like]: `%${searchQuery}%` } },
-
       ]
     },
     order: [['id', 'DESC']],

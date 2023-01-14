@@ -22,20 +22,16 @@ import AlertSnackBar from "./AlertSnackbar";
 import PersonIcon from "@mui/icons-material/Person";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-function isValidEmail(email) {
-  return /\S+@\S+\.\S+/.test(email);
-}
 
 export default function ProfileForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const [email, setEmail] = useState("");
   const [dataSnackbar, setDataSnackbar] = useState(false);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+
   const navigate = useNavigate();
 
-  
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -146,13 +142,18 @@ export default function ProfileForm() {
     }
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
 
-  const handleDisable = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
+  const handleDisableAccount = async () => {
+    const response = await fetch(API_BASE_URL + "/users/disableAccount", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${localStorage.getItem("token")}`,
+      }
+    });
+    console.log("Response:", response);
+    navigate('/login')
+    localStorage.removeItem('token')
   };
 
   return (
@@ -164,6 +165,14 @@ export default function ProfileForm() {
         </Avatar>
         <h2>Profile</h2>
       </Grid>
+      <Button
+        variant="outlined"
+        startIcon={<DeleteIcon />}
+        color="error"
+        onClick={() => handleDisableAccount()}
+        fullWidth>
+        Disable account
+      </Button>
       <form onSubmit={handleSubmit}>
         <FormControl margin="normal" fullWidth>
           <TextField
@@ -178,6 +187,21 @@ export default function ProfileForm() {
               ),
             }}
             defaultValue={getUserData().username}
+            disabled
+          />
+        </FormControl>
+        <FormControl margin="normal" fullWidth>
+          <TextField
+            label="Change Username"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton>
+                    <AccountCircleIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             onChange={(event) => setUsername(event.target.value)}
             onBlur={() => checkUsernameAvailability()}
             helperText={
@@ -207,12 +231,27 @@ export default function ProfileForm() {
               emailAvailability === false && <p>{emailErrorMessage}</p>
             }
             error={!emailAvailability}
+            disabled={true}
+          />
+        </FormControl>
+        <FormControl margin="normal" fullWidth>
+          <TextField
+            label="Change Email"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton>
+                    <MailOutlineIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
         <FormControl margin="normal" fullWidth>
           <TextField
             type="password"
-            label="Password"
+            label="Change Password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             InputProps={{
@@ -234,20 +273,9 @@ export default function ProfileForm() {
             type="submit"
             disabled={!usernameAvailability || !emailAvailability}
           >
-            Save
+            Save changes
           </Button>
-          <Button 
-          variant="outlined" 
-          startIcon={<DeleteIcon />} 
-          color="error"
-          onClick={() => {
-            
-            handleDisable();
-            navigate('/login')
-            localStorage.removeItem('token')
-          }}>
-            Disable account
-          </Button>
+
         </Stack>
       </form>
     </Grid>

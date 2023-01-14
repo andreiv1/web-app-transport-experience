@@ -9,7 +9,6 @@ function ExperiencesList(props) {
     }, [props.items])
     return (
         <>
-        {console.log("list items,",items)}
             {items.map((experience) => (
             <ExperienceCard
               key={experience.id}

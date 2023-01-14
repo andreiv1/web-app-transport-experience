@@ -231,12 +231,27 @@ export default function ProfileForm() {
               emailAvailability === false && <p>{emailErrorMessage}</p>
             }
             error={!emailAvailability}
+            disabled={true}
+          />
+        </FormControl>
+        <FormControl margin="normal" fullWidth>
+          <TextField
+            label="Change Email"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconButton>
+                    <MailOutlineIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
         <FormControl margin="normal" fullWidth>
           <TextField
             type="password"
-            label="Password"
+            label="Change Password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             InputProps={{

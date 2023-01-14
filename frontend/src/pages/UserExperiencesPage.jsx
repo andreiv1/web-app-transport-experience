@@ -1,32 +1,38 @@
 import { Box, Stack } from "@mui/system";
 import React, { useState, useEffect } from "react";
-import ExperienceCard from "../components/ExperienceCard.jsx";
 import { useParams } from "react-router-dom";
 import NavBar from "../components/NavBar.jsx";
 import { API_BASE_URL } from "../config.js";
 import getUserData from "../utils/getUserData.js";
 import { Typography } from "@mui/material";
+import ExperiencesList from "../components/ExperiencesList.jsx"
 
 export default function UserExperiencePage() {
   const [experiences, setExperiences] = useState([]);
   const params = useParams();
-  let userId = params.userId;
+  const [userId, setUserId] = useState(params.userId)
+  
   const fetchExperiences = async () => {
-    if(params.userId === "my"){
-      userId = getUserData().id;
-    }
-    const response = await fetch(
-      `${API_BASE_URL}/experiences/getAll/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `bearer ${localStorage.getItem("token")}`,
-        },
+      console.log("exp page",userId)
+      if(userId === undefined){
+        console.log("undefined user on exp page")
+        console.log("getUserData().id",getUserData().id)
+        setUserId(getUserData().id);
       }
-    );
-    setExperiences(await response.json());
-  };
+      const response = await fetch(
+        `${API_BASE_URL}/experiences/getAll/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json()
+      console.log("Experience data = ", data)
+      setExperiences(data);
+  }
 
   useEffect(() => {
     fetchExperiences();
@@ -57,13 +63,8 @@ export default function UserExperiencePage() {
       >
         <Stack spacing={2}>
           {message()}
-          {experiences.map((experience) => (
-            <ExperienceCard
-              exp={experience}
-              key={experience.id}
-              item={experience}
-            ></ExperienceCard>
-          ))}
+          {console.log("exp page", experiences)}
+          <ExperiencesList items={experiences}/>
         </Stack>
       </Box>
     </>

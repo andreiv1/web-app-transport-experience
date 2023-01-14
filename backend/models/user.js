@@ -69,10 +69,18 @@ const User = sequelize.define(
         user.password = await bcrypt.hash(user.password, 10);
       },
       beforeUpdate:async (user, options) => {
-        //Sanitaze email
-        user.email = user.email.toLowerCase();
-        //Encrypt password
+        
+        if(user.email) {
+          //Sanitaze email
+           user.email = user.email.toLowerCase();
+        }
+       
+        //Check if the password field is being updated
+        if(user.password) {
+          //Encrypt password
         user.password = await bcrypt.hash(user.password, 10);
+        }
+        
     }},
   }
 );

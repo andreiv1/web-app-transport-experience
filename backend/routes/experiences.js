@@ -6,109 +6,111 @@ const Experience = require("../models/experience");
 const Stop = require("../models/stop");
 const { Line } = require("../models/line");
 const User = require("../models/user");
-const Op = require('sequelize').Op
+const Op = require("sequelize").Op;
 
-router.route("/add").post(isUserAuth, checkSessionUserId, async function (req, res) {
-  //do not allow input for id
-  delete req.body.id;
-  req.body.userId = req.userdata.id;
-  const newExperience = await Experience.create(req.body);
-  res.status(201).json(newExperience);
-});
+router
+  .route("/add")
+  .post(isUserAuth, checkSessionUserId, async function (req, res) {
+    //do not allow input for id
+    delete req.body.id;
+    req.body.userId = req.userdata.id;
+    const newExperience = await Experience.create(req.body);
+    res.status(201).json(newExperience);
+  });
 
-router.route("/edit/:experienceId").put(isUserAuth, checkSessionUserId, async function (req, res) {
-  let experience = await Experience.findByPk(req.params.experienceId);
-  if (experience) {
-    await Experience.update(req.body, {
-      where: {
-        id: req.params.experienceId
-      }
-    }).then(async (rows) => {
-      if (rows == 1) {
-        let updatedExperience = await Experience.findByPk(req.params.experienceId);
-        res.status(200).json(updatedExperience);
-      } else {
-        res.status(400).json({ error: "Edit failed!" })
-      }
-    });
+router
+  .route("/edit/:experienceId")
+  .put(isUserAuth, checkSessionUserId, async function (req, res) {
+    let experience = await Experience.findByPk(req.params.experienceId);
+    if (experience) {
+      await Experience.update(req.body, {
+        where: {
+          id: req.params.experienceId,
+        },
+      }).then(async (rows) => {
+        if (rows == 1) {
+          let updatedExperience = await Experience.findByPk(
+            req.params.experienceId
+          );
+          res.status(200).json(updatedExperience);
+        } else {
+          res.status(400).json({ error: "Edit failed!" });
+        }
+      });
+    } else {
+      res.status(404).json({
+        error: `experience with id ${req.params.experienceId} not found`,
+      });
+    }
+  });
 
-  } else {
-    res.status(404).json({
-      error: `experience with id ${req.params.experienceId} not found`,
-    });
-  }
-});
-
-router.route('/getAll').get(isUserAuth, async function (req, res) {
+router.route("/getAll").get(isUserAuth, async function (req, res) {
   let experiences = await Experience.findAll({
-    order: [['id', 'DESC']],
+    order: [["id", "DESC"]],
     attributes: {
-      exclude: ['departureStopId', 'arrivalStopId', 'userId', 'lineId']
+      exclude: ["departureStopId", "arrivalStopId", "userId", "lineId"],
     },
     include: [
       {
         model: User,
-        as: 'user',
-        attributes: ['id', 'username'],
-        required: true
-
+        as: "user",
+        attributes: ["id", "username"],
+        required: true,
       },
       {
         model: Line,
-        as: 'line',
-        attributes: ['id', 'name', 'vehicleType'],
-        required: true
-
+        as: "line",
+        attributes: ["id", "name", "vehicleType"],
+        required: true,
       },
       {
         model: Stop,
-        as: 'departureStop',
-        attributes: ['id', 'name'],
-        required: true
+        as: "departureStop",
+        attributes: ["id", "name"],
+        required: true,
       },
       {
         model: Stop,
-        as: 'arrivalStop',
-        attributes: ['id', 'name'],
-        required: true
-      }]
+        as: "arrivalStop",
+        attributes: ["id", "name"],
+        required: true,
+      },
+    ],
   });
   res.status(201).json(experiences);
 });
 
-
-router.route('/get/:idExperience').get(isUserAuth, async function (req, res) {
+router.route("/get/:idExperience").get(isUserAuth, async function (req, res) {
   let experience = await Experience.findByPk(req.params.idExperience, {
     attributes: {
-      exclude: ['departureStopId', 'arrivalStopId', 'userId', 'lineId']
+      exclude: ["departureStopId", "arrivalStopId", "userId", "lineId"],
     },
     include: [
       {
         model: User,
-        as: 'user',
-        attributes: ['id', 'username'],
-        required: true
-
+        as: "user",
+        attributes: ["id", "username"],
+        required: true,
       },
       {
         model: Line,
-        as: 'line',
-        attributes: ['id', 'name', 'vehicleType'],
-        required: true
-
+        as: "line",
+        attributes: ["id", "name", "vehicleType"],
+        required: true,
       },
       {
         model: Stop,
-        as: 'departureStop',
-        attributes: ['id', 'name'],
-        required: true
+        as: "departureStop",
+        attributes: ["id", "name"],
+        required: true,
       },
       {
         model: Stop,
-        as: 'arrivalStop',
-        attributes: ['id', 'name'],
-        required: true
-      }]
+        as: "arrivalStop",
+        attributes: ["id", "name"],
+        required: true,
+      },
+    ],
   });
   if (experience) {
     return res.status(200).json(experience);
@@ -119,106 +121,122 @@ router.route('/get/:idExperience').get(isUserAuth, async function (req, res) {
   }
 });
 
-router.route("/getAll/:userId").get(isUserAuth, checkSessionUserId, async function (req, res) {
-  let experiences = await Experience.findAll({
-    where: {
-      userId: req.params.userId
-    },
-    order: [['id', 'DESC']],
-    atributes: {
-      exclude: ['departureStopId', 'arrivalStopId', 'userId', 'lineId']
-    },
-    include: [
-      {
-        model: User,
-        as: 'user',
-        attributes: ['id', 'username'],
-        required: true
+router
+  .route("/getAll/:userId")
+  .get(isUserAuth, checkSessionUserId, async function (req, res) {
+    let experiences = await Experience.findAll({
+      where: {
+        userId: req.params.userId,
       },
-      {
-        model: Line,
-        as: 'line',
-        attributes: ['id', 'name', 'vehicleType'],
-        required: true
+      order: [["id", "DESC"]],
+      atributes: {
+        exclude: ["departureStopId", "arrivalStopId", "userId", "lineId"],
       },
-      {
-        model: Stop,
-        as: 'departureStop',
-        attributes: ['id', 'name'],
-        required: true
-      },
-      {
-        model: Stop,
-        as: 'arrivalStop',
-        attributes: ['id', 'name'],
-        required: true
-      }]
-
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "username"],
+          required: true,
+        },
+        {
+          model: Line,
+          as: "line",
+          attributes: ["id", "name", "vehicleType"],
+          required: true,
+        },
+        {
+          model: Stop,
+          as: "departureStop",
+          attributes: ["id", "name"],
+          required: true,
+        },
+        {
+          model: Stop,
+          as: "arrivalStop",
+          attributes: ["id", "name"],
+          required: true,
+        },
+      ],
+    });
+    res.status(201).json(experiences);
   });
-  res.status(201).json(experiences);
-});
 
-router.route("/delete/:experienceId").delete(isUserAuth, checkSessionUserId, async function (req, res) {
-  Experience.destroy({
-    where: {
-      id: req.params.experienceId,
-    },
-  }).then((rows) => {
-    if (rows === 1) {
-      res.status(200).json({
-        message: `experience with id ${req.params.experienceId} deleted successfully`,
+router
+  .route("/delete/:experienceId")
+  .delete(isUserAuth, async function (req, res) {
+    let experience = await Experience.findByPk(req.params.experienceId);
+    if (experience) {
+      //Check if auth user matches the user who own the experience before deleting it
+      checkSessionUserId(req, res, experience.userId, () => {
+        Experience.destroy({
+          where: {
+            id: req.params.experienceId,
+          },
+        }).then((rows) => {
+          if (rows === 1) {
+            res.status(200).json({
+              message: `experience with id ${req.params.experienceId} deleted successfully`,
+            });
+          } else {
+            res.status(404).json({
+              error: `experience with id ${req.params.experienceId} not found`,
+            });
+          }
+        });
       });
     } else {
-      res.status(404).json({
-        error: `line with id ${req.params.experienceId} not found`,
+      res.status(401).json({
+        error: `experience with id ${req.params.experienceId} not found`,
       });
     }
   });
-});
 
 router.route("/search").get(isUserAuth, async function (req, res) {
   const searchQuery = req.query.q;
   let searchedExperiences = await Experience.findAll({
     where: {
       [Op.or]: [
-        { '$line.name$': { [Op.like]: `%${searchQuery}%` } },
-        { '$line.vehicleType$': { [Op.like]: `%${searchQuery}%`}},
-        { '$departureStop.name$': { [Op.like]: `%${searchQuery}%` } },
-        { '$arrivalStop.name$': { [Op.like]: `%${searchQuery}%` } },
-      ]
+        { "$line.name$": `${searchQuery}` },
+        { "$line.vehicleType$": `${searchQuery}` },
+        { "$departureStop.name$": { [Op.like]: `%${searchQuery}%` } },
+        { "$arrivalStop.name$": { [Op.like]: `%${searchQuery}%` } },
+      ],
     },
-    order: [['id', 'DESC']],
+    order: [["id", "DESC"]],
     atributes: {
-      exclude: ['departureStopId', 'arrivalStopId', 'userId', 'lineId']
+      exclude: ["departureStopId", "arrivalStopId", "userId", "lineId"],
     },
     include: [
       {
         model: User,
-        as: 'user',
-        attributes: ['id', 'username'],
-        required: true
+        as: "user",
+        attributes: ["id", "username"],
+        required: true,
       },
       {
         model: Line,
-        as: 'line',
-        attributes: ['id', 'name', 'vehicleType'],
-        required: true
+        as: "line",
+        attributes: ["id", "name", "vehicleType"],
+        required: true,
       },
       {
         model: Stop,
-        as: 'departureStop',
-        attributes: ['id', 'name'],
-        required: true
+        as: "departureStop",
+        attributes: ["id", "name"],
+        required: true,
       },
       {
         model: Stop,
-        as: 'arrivalStop',
-        attributes: ['id', 'name'],
-        required: true
-      }]
-  })
-  return res.status(201).json({ "query": req.query.q, "result": searchedExperiences })
-})
-
+        as: "arrivalStop",
+        attributes: ["id", "name"],
+        required: true,
+      },
+    ],
+  });
+  return res
+    .status(201)
+    .json({ query: req.query.q, result: searchedExperiences });
+});
 
 module.exports = router;

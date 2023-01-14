@@ -160,13 +160,17 @@ router
   .route("/disableAccount")
   .post(isUserAuth, checkSessionUserId, async function (req, res) {
     let user = await User.findByPk(req.userdata.id);
-    if (user && user.isAdmin == 0) {
+    if (user) {
+      if(user.enabled == 0) {
+        res.status(400).json({error: `Account is already disabled!`})
+      }
       await User.update({enabled: 0}, {
         where: {
           id: req.userdata.id
         },
         individualHooks: true,
       });
+      res.status(201).json({message: `Account disabled succesfuly!`});
     } else {
       res.status(404).json({ error: `Account couldn't be disabled.` });
     }

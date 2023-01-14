@@ -66,22 +66,7 @@ function ExperienceCard(props) {
     handleMobileMenuClose();
   };
 
-  const deleteExperience = async (experienceId) => {
-    try {
-      console.log("Deleted experience ", experienceId);
-      await fetch(API_BASE_URL + `/experiences/delete/${experienceId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `bearer ${localStorage.getItem("token")}`,
-        },
-      }).then(() => {
-        console.log("Experience deleted");
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   const { item } = props;
   const menuId = "primary-search-account-menu";
@@ -109,8 +94,7 @@ function ExperienceCard(props) {
       <MenuItem
         onClick={() => {
           handleMenuClose();
-          //TODO
-          deleteExperience(item.id);
+          props.onDelete();
 
         }}
       >

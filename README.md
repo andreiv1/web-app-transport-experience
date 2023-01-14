@@ -33,8 +33,8 @@ Aplicația trebuie să permită crearea unui cont prin care utilizatorul poate s
   - [x] Listarea tuturor experiențelor create de un utilizator
   - [ ] Ștergerea unei experiențe
 
-- [ ] Modulul de Căutare
-  - [ ] Modulul de căutare va trebui să permită utilizatorului introducerea unor cuvinte cheie, după care vor fi afișate rezultatele, sub formă de listă.
-  - [ ] Modulul va trebui să returneze rezultate relevante în funcție de locație, mijlocul de transport folosit sau destinație
+- [x] Modulul de Căutare
+  - [x] Modulul de căutare va trebui să permită utilizatorului introducerea unor cuvinte cheie, după care vor fi afișate rezultatele, sub formă de listă.
+  - [x] Modulul va trebui să returneze rezultate relevante în funcție de locație, mijlocul de transport folosit sau destinație
 
 [Specificații proiect](https://drive.google.com/drive/u/1/folders/1_rYCcGC0epvprSDm1nYNP94Ez9ODvxoQ)

@@ -141,7 +141,6 @@ function ExperienceCard(props) {
   </Grid>)
 
   const settingsButton = () => {
-    console.log("TEST = ", getUserData().id, item.user.id)
     if(getUserData().id !== item.user.id) {
       return (<></>)
     }

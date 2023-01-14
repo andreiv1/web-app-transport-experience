@@ -10,23 +10,25 @@ import ExperiencesList from "../components/ExperiencesList.jsx"
 export default function UserExperiencePage() {
   const [experiences, setExperiences] = useState([]);
   const params = useParams();
-  const [userId, setUserId] = useState(undefined)
+  const [userId, setUserId] = useState(undefined);
 
   //This function is called when userId changed
   const fetchExperiences = useCallback(async () => {
-    const response = await fetch(
-      `${API_BASE_URL}/experiences/getAll/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    const data = await response.json()
-    console.log("Experience data = ", data)
-    setExperiences(data);
+    if (userId !== undefined) {
+      const response = await fetch(
+        `${API_BASE_URL}/experiences/getAll/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json()
+      console.log("Experience data = ", data)
+      setExperiences(data);
+    }
   }, [userId])
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export default function UserExperiencePage() {
     }
 
     fetchExperiences();
-  }, [userId,params.userId]);
+  }, [userId, params.userId]);
 
   const message = () => {
     if (experiences.length > 0) {

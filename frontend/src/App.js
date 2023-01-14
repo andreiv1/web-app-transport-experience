@@ -31,6 +31,7 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/addExperience" element={<AddExperiencePage />} />
+          <Route path="/experiences" element={<UserExperiencesPage />} />
           <Route path="/experiences/:userId" element={<UserExperiencesPage />} />
           <Route path="/editExperience/:id" element={<EditExperiencePage />} />
         </Route>

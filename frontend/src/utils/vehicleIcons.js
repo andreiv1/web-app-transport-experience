@@ -6,9 +6,13 @@ export function getVehicleIcon(type) {
     switch (type) {
         case 'bus':
             return <DirectionsBusIcon />
+        case 'trolleybus':
+            return <DirectionsBusIcon />
         case 'tram':
             return <TramIcon />
         case 'subway':
             return <SubwayIcon />
+        default:
+            return <></>
     }
 }

@@ -406,7 +406,7 @@ function ExperienceForm() {
                 </Grid>
                 <Grid item xs>
                     <Button variant="contained" onClick={handleSubmit} type="submit" fullWidth
-                        disabled={lineNotEmpty || departureNotEmpty || arrivalNotEmpty || timeNotEmpty || durationNegative || crowdednessNotEmpty || satisfactionNotEmpty}>
+                        disabled={(lineNotEmpty || departureNotEmpty || arrivalNotEmpty || timeNotEmpty || durationNegative || crowdednessNotEmpty || satisfactionNotEmpty) && !isEditing()}>
                         Share experience
                     </Button>
                 </Grid>

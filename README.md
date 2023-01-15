@@ -31,7 +31,7 @@ Aplicația trebuie să permită crearea unui cont prin care utilizatorul poate s
 
   - [x] Modificarea intrărilor specifice utilizatorului
   - [x] Listarea tuturor experiențelor create de un utilizator
-  - [ ] Ștergerea unei experiențe
+  - [x] Ștergerea unei experiențe
 
 - [x] Modulul de Căutare
   - [x] Modulul de căutare va trebui să permită utilizatorului introducerea unor cuvinte cheie, după care vor fi afișate rezultatele, sub formă de listă.

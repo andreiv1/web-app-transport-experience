@@ -4,9 +4,7 @@ import { API_BASE_URL } from "../config";
 import {
   Avatar,
   Button,
-  Checkbox,
   FormControl,
-  FormControlLabel,
   Grid,
   InputAdornment,
   TextField,
@@ -22,7 +20,6 @@ import AlertSnackBar from "./AlertSnackbar";
 import PersonIcon from "@mui/icons-material/Person";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-
 export default function ProfileForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -30,7 +27,6 @@ export default function ProfileForm() {
   const [dataSnackbar, setDataSnackbar] = useState(false);
 
   const navigate = useNavigate();
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -142,18 +138,17 @@ export default function ProfileForm() {
     }
   };
 
-
   const handleDisableAccount = async () => {
     const response = await fetch(API_BASE_URL + "/users/disableAccount", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `bearer ${localStorage.getItem("token")}`,
-      }
+      },
     });
     console.log("Response:", response);
-    navigate('/login')
-    localStorage.removeItem('token')
+    navigate("/login");
+    localStorage.removeItem("token");
   };
 
   return (
@@ -170,7 +165,8 @@ export default function ProfileForm() {
         startIcon={<DeleteIcon />}
         color="error"
         onClick={() => handleDisableAccount()}
-        fullWidth>
+        fullWidth
+      >
         Disable account
       </Button>
       <form onSubmit={handleSubmit}>
@@ -275,7 +271,6 @@ export default function ProfileForm() {
           >
             Save changes
           </Button>
-
         </Stack>
       </form>
     </Grid>

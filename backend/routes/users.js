@@ -6,7 +6,7 @@ let router = express.Router();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const isAdmin = require("../middleware/isAdmin")
+const isAdmin = require("../middleware/isAdmin");
 const isUserAuth = require("../middleware/isUserAuth");
 const checkSessionUserId = require("../middleware/checkSessionUserId");
 const mailTransporter = require("../utils/mailTransporter");
@@ -110,37 +110,50 @@ router.route("/get/:userId").get(isUserAuth, async function (req, res) {
   }
 });
 
-router.route("/edit/:userId").put(isAdmin, async function (req, res) {
+router.route("/edit/:userId").put(isUserAuth, async function (req, res) {
   let user = await User.findByPk(req.params.userId);
   delete req.body.id;
   checkSessionUserId(req, res, user.id, async () => {
     if (user) {
-      await User.update(req.body, {
+      let updateData = {};
+      if (req.body.username) {
+        updateData["username"] = req.body.username;
+      }
+      if (req.body.password) {
+        updateData["password"] = req.body.password;
+      }
+      if (req.body.email) {
+        updateData["email"] = req.body.email;
+      }
+      console.log(updateData);
+      await User.update(updateData, {
         where: {
           id: req.params.userId,
         },
         individualHooks: true,
       })
         .then(async (rows) => {
-          if (rows == 1) {
-            let updatedUser = await User.findByPk(req.params.userId);
-            const authToken = jwt.sign(
-              {
-                id: updatedUser.id,
-                username: updatedUser.username,
-                email: updatedUser.email,
-                role: updatedUser.role,
-              },
-              process.env.JWT_SECRET_KEY,
-              {
-                expiresIn: "2h",
-              }
-            );
+          let updatedUser = await User.findByPk(req.params.userId);
+          const authToken = jwt.sign(
+            {
+              id: updatedUser.id,
+              username: updatedUser.username,
+              email: updatedUser.email,
+              role: updatedUser.role,
+            },
+            process.env.JWT_SECRET_KEY,
+            {
+              expiresIn: "2h",
+            }
+          );
+          if (updatedUser) {
             res
-              .status(200)
-              .json({ message: "User details changed", newToken: authToken });
-          } else {
-            res.status(400).json({ error: "Edit failed!" });
+              .status(201)
+              .json({ message: "User details changed", token: authToken });
+          }
+          else {
+            res.status(404)
+            .json({error: "User details couldn't be changed!"})
           }
         })
         .catch((err) => {
@@ -161,16 +174,19 @@ router
   .post(isUserAuth, checkSessionUserId, async function (req, res) {
     let user = await User.findByPk(req.userdata.id);
     if (user) {
-      if(user.enabled == 0) {
-        res.status(400).json({error: `Account is already disabled!`})
+      if (user.enabled == 0) {
+        res.status(400).json({ error: `Account is already disabled!` });
       }
-      await User.update({enabled: 0}, {
-        where: {
-          id: req.userdata.id
-        },
-        individualHooks: true,
-      });
-      res.status(201).json({message: `Account disabled succesfuly!`});
+      await User.update(
+        { enabled: 0 },
+        {
+          where: {
+            id: req.userdata.id,
+          },
+          individualHooks: true,
+        }
+      );
+      res.status(201).json({ message: `Account disabled succesfuly!` });
     } else {
       res.status(404).json({ error: `Account couldn't be disabled.` });
     }

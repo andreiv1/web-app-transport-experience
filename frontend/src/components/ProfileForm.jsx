@@ -52,7 +52,7 @@ export default function ProfileForm() {
       body: JSON.stringify(payload),
     })
       .then((response) => {
-        if (response.status === 200) {
+        if (response.status === 201) {
           setDataSnackbar({
             message: "Your account was successfuly updated!",
             severity: "success",

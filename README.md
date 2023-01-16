@@ -13,7 +13,7 @@ Aplicația trebuie să permită crearea unui cont prin care utilizatorul poate s
 - [x] Modulul Utilizator
 
   - [x] Creare cont utilizator pe baza unor câmpuri sau cu ajutorul unui API extern (GMAIL, Facebook, Linkedin)
-  - [ ] Modificarea sau dezactivarea contului
+  - [x] Modificarea sau dezactivarea contului
   - [x] Resetarea parolei
 
 - [x] Modulul de Partajare

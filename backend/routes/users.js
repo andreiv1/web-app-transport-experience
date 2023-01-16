@@ -149,7 +149,7 @@ router.route("/edit/:userId").put(isUserAuth, async function (req, res) {
           if (updatedUser) {
             res
               .status(201)
-              .json({ message: "User details changed", token: authToken });
+              .json({ message: "User details changed", newToken: authToken });
           }
           else {
             res.status(404)

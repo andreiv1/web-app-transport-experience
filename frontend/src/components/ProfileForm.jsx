@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../config";
 import {
@@ -21,9 +21,13 @@ import PersonIcon from "@mui/icons-material/Person";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function ProfileForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [changeUsername, setChangeUsername] = useState("");
+  const [changePassword, setChangePassword] = useState("");
+  const [changeEmail, setChangeEmail] = useState("");
+
+  const [currentUsername, setCurrentUsername] = useState("");
+  const [currentEmail, setCurrentEmail] = useState("");
+
   const [dataSnackbar, setDataSnackbar] = useState(false);
 
   const navigate = useNavigate();
@@ -32,14 +36,14 @@ export default function ProfileForm() {
     event.preventDefault();
 
     const payload = {};
-    if (username.length > 0) {
-      payload["username"] = username;
+    if (changeUsername.length > 0) {
+      payload["username"] = changeUsername;
     }
-    if (email.length > 0) {
-      payload["email"] = email;
+    if (changeEmail.length > 0) {
+      payload["email"] = changeEmail;
     }
-    if (password.length > 0) {
-      payload["password"] = password;
+    if (changePassword.length > 0) {
+      payload["password"] = changePassword;
     }
     console.log(payload);
 
@@ -57,6 +61,10 @@ export default function ProfileForm() {
             message: "Your account was successfuly updated!",
             severity: "success",
           });
+          setCurrentUsername(changeUsername)
+          setChangeUsername('')
+          setCurrentEmail(changeEmail)
+          setChangeEmail('')
         } else {
           setDataSnackbar({
             message:
@@ -95,7 +103,7 @@ export default function ProfileForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username: username }),
+        body: JSON.stringify({ username: changeUsername }),
       });
       console.log("Response:", response);
       const data = await response.json();
@@ -113,7 +121,7 @@ export default function ProfileForm() {
   const checkEmailAvailability = async () => {
     //Before, check locally if email matches regex
     const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,8}$/i;
-    if (email != "" && !regex.test(email)) {
+    if (changeEmail != "" && !regex.test(changeEmail)) {
       setEmailAvailability(false);
       setEmailErrorMessage("Enter the email format, like name@domain.com");
       return;
@@ -124,7 +132,7 @@ export default function ProfileForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: email }),
+        body: JSON.stringify({ email: changeEmail }),
       });
       console.log("Response:", response);
       const data = await response.json();
@@ -151,6 +159,11 @@ export default function ProfileForm() {
     localStorage.removeItem("token");
   };
 
+  useEffect(() => {
+    setCurrentEmail(getUserData().email)
+    setCurrentUsername(getUserData().username)
+  },[])
+
   return (
     <Grid>
       <AlertSnackBar data={dataSnackbar} />
@@ -172,7 +185,7 @@ export default function ProfileForm() {
       <form onSubmit={handleSubmit}>
         <FormControl margin="normal" fullWidth>
           <TextField
-            label="Username"
+            label="Current Username"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -182,7 +195,7 @@ export default function ProfileForm() {
                 </InputAdornment>
               ),
             }}
-            defaultValue={getUserData().username}
+            value={currentUsername}
             disabled
           />
         </FormControl>
@@ -198,7 +211,8 @@ export default function ProfileForm() {
                 </InputAdornment>
               ),
             }}
-            onChange={(event) => setUsername(event.target.value)}
+            value={changeUsername}
+            onChange={(event) => setChangeUsername(event.target.value)}
             onBlur={() => checkUsernameAvailability()}
             helperText={
               usernameAvailability === false && (
@@ -210,7 +224,7 @@ export default function ProfileForm() {
         </FormControl>
         <FormControl margin="normal" fullWidth>
           <TextField
-            label="Email"
+            label="Current Email"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -220,12 +234,12 @@ export default function ProfileForm() {
                 </InputAdornment>
               ),
             }}
-            defaultValue={getUserData().email}
-            onChange={(event) => setEmail(event.target.value)}
+            value={currentEmail}
+            onChange={event => setChangeEmail(event.target.value)}
             onBlur={() => checkEmailAvailability()}
-            helperText={
-              emailAvailability === false && <p>{emailErrorMessage}</p>
-            }
+            helperText={emailAvailability === false && (
+              <p>{emailErrorMessage}</p>
+            )}
             error={!emailAvailability}
             disabled={true}
           />
@@ -233,6 +247,8 @@ export default function ProfileForm() {
         <FormControl margin="normal" fullWidth>
           <TextField
             label="Change Email"
+            value={changeEmail}
+            onChange={(event) => setChangeEmail(event.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -248,8 +264,8 @@ export default function ProfileForm() {
           <TextField
             type="password"
             label="Change Password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            value={changePassword}
+            onChange={(event) => setChangePassword(event.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
